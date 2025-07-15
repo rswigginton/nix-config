@@ -39,12 +39,21 @@
           specialArgs = { inherit inputs outputs; };
           modules = [ ./hosts/skadi ];
         };
+        nixos = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [ ./hosts/nixos ];
+        };
       };
       homeConfigurations = {
         "robert@skadi" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [ ./home/robert/skadi.nix ];
+        };
+        "robert@nixos" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages."x86_64-linux";
+          extraSpecialArgs = { inherit inputs outputs; };
+          modules = [ ./home/robert/nixos.nix ];
         };
       };
     };
