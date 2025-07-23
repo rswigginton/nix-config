@@ -1,6 +1,12 @@
 # Common configuration for all hosts
 
 { lib, inputs, outputs, ... }: {
+  imports = 
+    [
+      inputs.home-manager.nixosModules.home-manager
+      ./fish.nix
+    ];
+
   nixpkgs = {
     # You can add overlays here
     overlays = [
@@ -36,6 +42,7 @@
     };
     gc = {
       automatic = true;
+      dates = "weekly";
       options = "--delete-older-than 30d";
     };
     optimise.automatic = true;
