@@ -4,6 +4,8 @@
     ./atuin.nix
     ./fzf.nix
     ./starship.nix
+    ./tmux.nix
+    ./git.nix
   ];
 
   programs.carapace = {
@@ -44,23 +46,20 @@
   };
 
   home.packages = with pkgs; [
-    claude-code
-    coreutils
+    # Development environments
     devenv
-    fd
-    gcc
-    go
-    htop
+    
+    # CLI utilities  
     httpie
-    jq
-    lazygit
     progress
-    ripgrep
     tldr
     trash-cli
-    unzip
     yazi
-    zip
+    
+    # Note: The following are now in system packages:
+    # - claude-code, lazygit (in hosts/mimir/configuration.nix)
+    # - fd, jq, ripgrep, htop, unzip, zip (in hosts/common/default.nix)
+    # - gcc, go (better at system level, in hosts/common or mimir)
   ];
 }
 

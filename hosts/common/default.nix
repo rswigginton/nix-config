@@ -1,11 +1,19 @@
 # Common configuration for all hosts
 
-{ lib, inputs, outputs, ... }: {
+{ lib, inputs, outputs, pkgs, ... }: {
   imports = 
     [
       inputs.home-manager.nixosModules.home-manager
       ./fish.nix
     ];
+
+  # Home-manager common settings
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit inputs outputs; };
+    backupFileExtension = "backup";  # Automatically backup conflicting files
+  };
 
   nixpkgs = {
     # You can add overlays here
@@ -30,6 +38,51 @@
       # Disable if you don't want unfree packages
       allowUnfree = true;
     };
+  };
+
+  # Common system packages for all hosts
+  environment.systemPackages = with pkgs; [
+    # Essential tools
+    vim
+    wget
+    git
+    curl
+    
+    # Development tools
+    gh
+    neovim
+    gcc
+    
+    # System utilities
+    htop
+    btop
+    unzip
+    zip
+    tree
+    file
+    which
+    gnumake
+    
+    # Network tools
+    dig
+    nmap
+    traceroute
+    
+    # Text processing
+    jq
+    ripgrep
+    fd
+  ];
+
+  # Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+
+  # Common programs configuration
+  programs.tmux = {
+    enable = true;
+    clock24 = true;
   };
 
   nix = {

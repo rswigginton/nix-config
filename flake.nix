@@ -35,25 +35,16 @@
         forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       overlays = import ./overlays { inherit inputs; };
       nixosConfigurations = {
-        skadi = nixpkgs.lib.nixosSystem {
+        mimir = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          modules = [ ./hosts/skadi ];
-        };
-        nixos = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = [ ./hosts/nixos ];
+          modules = [ ./hosts/mimir ];
         };
       };
       homeConfigurations = {
-        "robert@skadi" = home-manager.lib.homeManagerConfiguration {
+        "robert@mimir" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
           extraSpecialArgs = { inherit inputs outputs; };
-          modules = [ ./home/robert/skadi.nix ];
-        };
-        "robert@nixos" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
-          modules = [ ./home/robert/nixos.nix ];
+          modules = [ ./home/robert/mimir.nix ];
         };
       };
     };
