@@ -18,4 +18,7 @@
       config.allowUnfree = true;
     };
   };
+
+  # NUR overlay for firefox extensions and other community packages
+  nur = inputs.nur.overlay;
 }

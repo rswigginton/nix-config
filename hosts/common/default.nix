@@ -62,6 +62,7 @@
     file
     which
     gnumake
+    eza
     
     # Network tools
     dig

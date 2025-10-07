@@ -17,9 +17,10 @@
     };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { self, home-manager, nixpkgs, ... }@inputs:
+  outputs = { self, home-manager, nixpkgs, nur, ... }@inputs:
     let
       inherit (self) outputs;
       systems = [
@@ -42,7 +43,16 @@
       };
       homeConfigurations = {
         "robert@mimir" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            overlays = [
+              outputs.overlays.additions
+              outputs.overlays.modifications
+              outputs.overlays.stable-packages
+              outputs.overlays.nur
+            ];
+            config.allowUnfree = true;
+          };
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [ ./home/robert/mimir.nix ];
         };
