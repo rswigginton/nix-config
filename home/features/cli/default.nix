@@ -6,6 +6,7 @@
     ./starship.nix
     ./tmux.nix
     ./git.nix
+    ./neovim.nix
   ];
 
   programs.carapace = {
@@ -17,16 +18,6 @@
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-    withNodeJs = true;
-    withPython3 = true;
   };
 
   programs.bat = {enable = true;};

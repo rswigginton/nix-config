@@ -44,6 +44,10 @@
           specialArgs = { inherit inputs outputs; };
           modules = [ ./hosts/tyr ];
         };
+        nixos = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [ ./hosts/nixos ];
+        };
       };
       homeConfigurations = {
         "robert@mimir" = home-manager.lib.homeManagerConfiguration {
@@ -73,6 +77,20 @@
           };
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [ ./home/robert/tyr.nix ];
+        };
+        "robert@nixos" = home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            overlays = [
+              outputs.overlays.additions
+              outputs.overlays.modifications
+              outputs.overlays.stable-packages
+              outputs.overlays.nur
+            ];
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = { inherit inputs outputs; };
+          modules = [ ./home/robert/nixos.nix ];
         };
       };
     };
