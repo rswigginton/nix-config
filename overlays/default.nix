@@ -7,9 +7,8 @@
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev:
     {
-      # example = prev.example.overrideAttrs (oldAttrs: rec {
-      # ...
-      # });
+      # Override claude-code with the latest version from claude-code-nix
+      claude-code = inputs.claude-code-nix.packages.${final.system}.default;
     };
 
   stable-packages = final: _prev: {

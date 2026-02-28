@@ -79,6 +79,7 @@
     wget
     git
     curl
+    chezmoi
 
     # Development tools
     gh
