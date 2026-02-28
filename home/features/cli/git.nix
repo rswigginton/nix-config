@@ -14,6 +14,8 @@
         autocrlf = "input";
       };
       
+      credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
+
       merge = {
         tool = "vimdiff";
         conflictstyle = "diff3";
