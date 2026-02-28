@@ -65,9 +65,12 @@
     shell = pkgs.fish;
   };
 
-  # Enable COSMIC Desktop Environment
-  services.displayManager.cosmic-greeter.enable = true;
+  # Display manager
+  services.displayManager.ly.enable = true;
+
+  # Desktop environments
   services.desktopManager.cosmic.enable = true;
+  programs.hyprland.enable = true;
 
   # Common system packages for all hosts
   environment.systemPackages = with pkgs; [

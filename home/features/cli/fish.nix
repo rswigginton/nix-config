@@ -19,12 +19,6 @@
       set -x FZF_DEFAULT_COMMAND fd --type f --exclude .git --follow --hidden
       set -x FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 
-      if test (tty) = "/dev/tty1"
-        exec uwsm start -S -F /run/current-system/sw/bin/Hyprland
-      end
-      if test (tty) = "/dev/tty2"
-        exec gamescope -O HDMI-A-1 -W 1920 -H 1080 --adaptive-sync --hdr-enabled --rt --steam -- steam -pipewire-dmabuf -tenfoot
-      end
     '';
     shellAbbrs = {
       ls = "eza";
