@@ -58,12 +58,10 @@
       nixosConfigurations = {
         mimir = mkHost "mimir";
         tyr = mkHost "tyr";
-        nixos = mkHost "nixos";
       };
       homeConfigurations = {
         "robert@mimir" = mkHome "mimir";
         "robert@tyr" = mkHome "tyr";
-        "robert@nixos" = mkHome "nixos";
       };
     };
 }
