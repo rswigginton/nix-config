@@ -58,10 +58,12 @@
       nixosConfigurations = {
         mimir = mkHost "mimir";
         tyr = mkHost "tyr";
+        rw-dsk-1 = mkHost "rw-dsk-1";
       };
       homeConfigurations = {
         "robert@mimir" = mkHome "mimir";
         "robert@tyr" = mkHome "tyr";
+        "robert@rw-dsk-1" = mkHome "rw-dsk-1";
       };
     };
 }
