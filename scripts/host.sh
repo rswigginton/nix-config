@@ -105,6 +105,13 @@ NIXEOF
     /};/ i\\        \"robert@$HOSTNAME\" = mkHome \"$HOSTNAME\";
   }" "$REPO_ROOT/flake.nix"
 
+  # Stage new files so Nix flakes can see them (flakes ignore untracked files)
+  git -C "$REPO_ROOT" add \
+    "hosts/$HOSTNAME/default.nix" \
+    "hosts/$HOSTNAME/configuration.nix" \
+    "home/robert/$HOSTNAME.nix" \
+    flake.nix
+
   echo ""
   echo "Done! Created:"
   echo "  hosts/$HOSTNAME/default.nix"

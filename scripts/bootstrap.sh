@@ -59,7 +59,8 @@ if [[ ! -f "$CLONE_DIR/hosts/$HOSTNAME/hardware-configuration.nix" ]]; then
   echo "Copying hardware-configuration.nix from current system..."
   if [[ -f /etc/nixos/hardware-configuration.nix ]]; then
     cp /etc/nixos/hardware-configuration.nix "$CLONE_DIR/hosts/$HOSTNAME/"
-    echo "Copied."
+    git -C "$CLONE_DIR" add "hosts/$HOSTNAME/hardware-configuration.nix"
+    echo "Copied and staged."
   else
     echo "WARNING: /etc/nixos/hardware-configuration.nix not found."
     echo "Generate it with: nixos-generate-config --show-hardware-config > $CLONE_DIR/hosts/$HOSTNAME/hardware-configuration.nix"
