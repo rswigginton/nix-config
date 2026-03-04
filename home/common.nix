@@ -1,4 +1,12 @@
-{ pkgs, ... }: {
+{ config, lib, outputs, pkgs, ... }: {
+  nix = {
+    package = lib.mkDefault pkgs.nix;
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      warn-dirty = false;
+    };
+  };
+
   programs.carapace = {
     enable = true;
     enableFishIntegration = true;

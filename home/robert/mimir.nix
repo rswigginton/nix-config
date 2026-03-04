@@ -1,8 +1,12 @@
 { ... }: {
   imports = [
     ./home.nix
-    ../common
-    ../features/cli
-    ../features/desktop
+    ../common.nix
+    ../atuin.nix
+    ../starship.nix
+    ../git.nix
+    ../neovim.nix
+    ../firefox.nix
+    ../hyprland.nix
   ];
 }

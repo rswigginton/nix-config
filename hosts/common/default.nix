@@ -104,6 +104,7 @@
     which
     gnumake
     eza
+    gum
 
     # Network tools
     dig
