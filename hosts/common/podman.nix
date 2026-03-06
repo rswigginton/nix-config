@@ -3,7 +3,7 @@
     distrobox
     lazydocker
     podman-compose
-    (writeShellScriptBin "docker-compose" ''exec podman compose "$@"'')
+    (writeShellScriptBin "docker-compose" ''exec podman-compose "$@"'')
   ];
 
   virtualisation = {
