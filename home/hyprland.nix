@@ -15,7 +15,7 @@
     settings = {
       "$terminal" = "alacritty";
       "$fileManager" = "nautilus";
-      "$mainMod" = "ALT";
+      "$mainMod" = "SUPER";
 
       monitor = [ ",preferred,auto,auto" ];
 
@@ -117,10 +117,6 @@
         };
       };
 
-      gestures = {
-        workspace_swipe = false;
-      };
-
       bind = [
         # Applications
         "$mainMod, return, exec, $terminal"
@@ -211,10 +207,10 @@
       ];
 
       # Window rules
-      windowrulev2 = [
-        "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-      ];
+      # windowrulev2 = [
+      #   "suppressevent maximize, class:.*"
+      #   "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+      # ];
 
       # Autostart
       exec-once = [
