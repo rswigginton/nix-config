@@ -5,6 +5,9 @@
     ../common
     ../common/fish.nix
     ../common/podman.nix
+    ../common/steam.nix
+    ../common/cosmic.nix
+    ../common/hyprland.nix
     ./configuration.nix
   ];
 
