@@ -26,10 +26,11 @@
       yaml-language-server
       pyright
 
-      # Formatters
+      # Formatters / Linters
       stylua
       prettierd
       nixfmt-rfc-style
+      ruff
 
       # Additional tools
       tree-sitter

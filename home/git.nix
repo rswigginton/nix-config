@@ -67,12 +67,5 @@
     ];
   };
 
-  programs.lazygit = {
-    enable = true;
-    settings = {
-      gui.theme = {
-        selectedLineBgColor = ["blue"];
-      };
-    };
-  };
+  # lazygit config managed by chezmoi
 }

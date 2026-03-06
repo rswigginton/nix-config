@@ -3,6 +3,8 @@
 {
   imports = [
     ../common
+    ../common/fish.nix
+    ../common/podman.nix
     ./configuration.nix
   ];
 

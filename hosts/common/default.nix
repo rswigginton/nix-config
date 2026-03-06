@@ -3,7 +3,6 @@
 { lib, inputs, outputs, pkgs, ... }: {
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    ./fish.nix
   ];
 
   # Home-manager common settings
@@ -57,20 +56,12 @@
   # Security
   security.sudo.wheelNeedsPassword = false;
 
-  # Define user account
-  users.users.robert = {
-    isNormalUser = true;
-    description = "Robert";
-    extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.fish;
-  };
-
-  # Display manager
+# Display manager
   services.displayManager.ly.enable = true;
 
   # Desktop environments
   services.desktopManager.cosmic.enable = true;
-  programs.hyprland.enable = true;
+  # programs.hyprland.enable = true;
 
   # Common system packages for all hosts
   environment.systemPackages = with pkgs; [
