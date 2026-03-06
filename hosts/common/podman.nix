@@ -2,9 +2,8 @@
   environment.systemPackages = with pkgs; [
     distrobox
     lazydocker
-    docker-compose
     podman-compose
-    (writeShellScriptBin "docker-compose" ''exec docker compose "$@"'')
+    (writeShellScriptBin "docker-compose" ''exec podman compose "$@"'')
   ];
 
   virtualisation = {
