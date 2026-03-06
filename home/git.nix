@@ -1,10 +1,13 @@
 { pkgs, ... }: {
   programs.git = {
     enable = true;
-    userName = "Robert Wigginton";
-    userEmail = "rswigginton@gmail.com";
 
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Robert Wigginton";
+        email = "rswigginton@gmail.com";
+      };
+
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;
@@ -35,25 +38,25 @@
           syntax-theme = "Dracula";
         };
       };
-    };
 
-    aliases = {
-      # Shortcuts
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      st = "status";
+      alias = {
+        # Shortcuts
+        co = "checkout";
+        br = "branch";
+        ci = "commit";
+        st = "status";
 
-      # Useful aliases
-      last = "log -1 HEAD";
-      unstage = "reset HEAD --";
-      amend = "commit --amend --no-edit";
+        # Useful aliases
+        last = "log -1 HEAD";
+        unstage = "reset HEAD --";
+        amend = "commit --amend --no-edit";
 
-      # Pretty log
-      lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        # Pretty log
+        lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
 
-      # List branches sorted by last modified
-      b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'";
+        # List branches sorted by last modified
+        b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'";
+      };
     };
 
     ignores = [

@@ -8,12 +8,12 @@
   modifications = final: prev:
     {
       # Override claude-code with the latest version from claude-code-nix
-      claude-code = inputs.claude-code-nix.packages.${final.system}.default;
+      claude-code = inputs.claude-code-nix.packages.${final.stdenv.hostPlatform.system}.default;
     };
 
   stable-packages = final: _prev: {
     stable = import inputs.nixpkgs-stable {
-      system = final.system;
+      system = final.stdenv.hostPlatform.system;
       config.allowUnfree = true;
     };
   };

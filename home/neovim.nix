@@ -22,14 +22,14 @@
       gopls
       rust-analyzer
       terraform-ls
-      dockerfile-language-server-nodejs
+      dockerfile-language-server
       yaml-language-server
       pyright
 
       # Formatters / Linters
       stylua
       prettierd
-      nixfmt-rfc-style
+      nixfmt
       ruff
 
       # Additional tools

@@ -8,5 +8,6 @@
     ../neovim.nix
     ../firefox.nix
     ../hyprland.nix
+    ../k8s.nix
   ];
 }
