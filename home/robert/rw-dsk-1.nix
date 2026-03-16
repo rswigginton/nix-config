@@ -9,5 +9,6 @@
     ../firefox.nix
     ../hyprland.nix
     ../k8s.nix
+    ../discord.nix
   ];
 }

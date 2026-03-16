@@ -1,4 +1,11 @@
-{ inputs, outputs, lib, config, pkgs, ... }:
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -7,7 +14,10 @@
     ../common/podman.nix
     ../common/steam.nix
     ../common/cosmic.nix
-    ../common/hyprland.nix
+    # ../common/hyprland.nix
+    # ../common/kde.nix
+    ../common/virt-manager.nix
+    ../common/keyboards.nix
     ./configuration.nix
   ];
 

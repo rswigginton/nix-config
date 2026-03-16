@@ -9,6 +9,9 @@
       sync_frequency = "5m";
       auto_sync = true;
       search_mode = "fuzzy";
+      style = "full";
+      inline_height = "20";
+      filter_mode = "session-preload";
     };
   };
 }
