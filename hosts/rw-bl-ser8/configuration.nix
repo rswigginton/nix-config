@@ -27,6 +27,8 @@
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     vivaldi
+    slack
+    zoom
   ];
 
   # System state version
