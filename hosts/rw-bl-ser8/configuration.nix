@@ -5,13 +5,11 @@
   ];
 
   # Bootloader
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Hostname
-  networking.hostName = "rw-dsk-1";
+  networking.hostName = "rw-bl-ser8";
 
   # User account
   users.users.robert = {

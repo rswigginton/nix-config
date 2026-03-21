@@ -19,6 +19,10 @@
 
       credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
 
+      "includeIf \"gitdir:~/repos/Nestio/\"" = {
+        path = "~/.config/git/work";
+      };
+
       merge = {
         tool = "vimdiff";
         conflictstyle = "diff3";
@@ -70,5 +74,8 @@
     ];
   };
 
-  # lazygit config managed by chezmoi
+  home.file.".config/git/work".text = ''
+    [user]
+      email = robert.wigginton@funnelleasing.com
+  '';
 }
