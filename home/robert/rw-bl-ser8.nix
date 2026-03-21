@@ -8,5 +8,6 @@
     ../neovim.nix
     ../firefox.nix
     ../k8s.nix
+    ../slack.nix
   ];
 }
