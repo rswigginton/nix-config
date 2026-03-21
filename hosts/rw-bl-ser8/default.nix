@@ -12,7 +12,6 @@
     ../common
     ../common/fish.nix
     ../common/podman.nix
-    ../common/steam.nix
     ../common/cosmic.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
