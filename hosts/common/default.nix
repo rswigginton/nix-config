@@ -123,6 +123,9 @@
     polkitPolicyOwners = [ "robert" ];
   };
 
+  environment.variables.EDITOR = "nvim";
+  environment.variables.VISUAL = "nvim";
+
   nix = {
     settings = {
       experimental-features = "nix-command flakes";
