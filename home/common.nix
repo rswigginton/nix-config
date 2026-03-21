@@ -36,10 +36,11 @@
   home.packages = with pkgs; [
     (writeShellScriptBin "nce" ''
       CONFIG_DIR="$HOME/nix-config"
-      ''${EDITOR:-nvim} "$CONFIG_DIR"
+      cd "$CONFIG_DIR" && ''${EDITOR:-nvim} .
       if [ -n "$(git -C "$CONFIG_DIR" status --porcelain)" ]; then
         git -C "$CONFIG_DIR" add -A
-        git -C "$CONFIG_DIR" commit -m "update"
+        MSG=$(git -C "$CONFIG_DIR" diff --cached --name-only | sed 's|.*/||; s|\.nix$||' | sort -u | paste -sd ', ')
+        git -C "$CONFIG_DIR" commit -m "update $MSG"
         sudo nixos-rebuild switch --flake "$CONFIG_DIR"
         if [ $? -eq 0 ]; then
           git -C "$CONFIG_DIR" push
