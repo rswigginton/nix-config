@@ -93,6 +93,9 @@
     eza
     gum
 
+    # Cloud tools
+    awscli2
+
     # Network tools
     dig
     nmap
