@@ -15,6 +15,7 @@
     ../common/cosmic.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
+    ../common/tailscale.nix
     ./configuration.nix
   ];
 
