@@ -28,7 +28,7 @@
   environment.systemPackages = with pkgs; [
     vivaldi
     slack
-    zoom
+    zoom-us
   ];
 
   # System state version
