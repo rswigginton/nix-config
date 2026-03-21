@@ -95,6 +95,7 @@
 
     # Cloud tools
     awscli2
+    k9s
 
     # Network tools
     dig
