@@ -46,7 +46,6 @@ in
     hyprpaper
     pyprland
     solaar
-    walker
     jq
     nautilus
   ];
