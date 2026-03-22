@@ -91,7 +91,6 @@
     # Shell
     starship
     nushell
-    zsh-abbr
 
     # System utilities
     htop
@@ -141,6 +140,9 @@
     enable = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
+    interactiveShellInit = ''
+      source ${pkgs.zsh-abbr}/share/zsh/zsh-abbr/zsh-abbr.plugin.zsh
+    '';
   };
 
   programs.firefox.enable = true;
