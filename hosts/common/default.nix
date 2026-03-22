@@ -156,6 +156,19 @@
   environment.variables.EDITOR = "nvim";
   environment.variables.VISUAL = "nvim";
 
+  # SSH
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
+  users.users.robert.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBn3PEGOE8XR72+c5gnhnYnj3rrGoBXFhqEq086VU0Ep robert-personal"
+  ];
+
   nix = {
     settings = {
       experimental-features = "nix-command flakes";
