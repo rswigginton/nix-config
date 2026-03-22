@@ -10,8 +10,11 @@
 {
   imports = [
     ../common
-    ../common/cosmic.nix
     ../common/fish.nix
+    ../common/podman.nix
+    # ../common/cosmic.nix
+    ../common/hyprland.nix
+    ../common/virt-manager.nix
     ./hardware-configuration.nix
   ];
 
@@ -39,9 +42,9 @@
   ];
 
   # Enable home-manager for the robert user
-  #home-manager.users = {
-  #  robert = import ../../home/robert/nixos.nix;
-  #};
+  home-manager.users = {
+    robert = import ../../home/robert/nixos.nix;
+  };
 
   # System state version
   system.stateVersion = "25.11";

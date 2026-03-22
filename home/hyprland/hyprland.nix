@@ -1,13 +1,54 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  smart_focus = pkgs.writeShellScript "smart_focus.sh" ''
+    direction=$1
+    workspace_change=$2
+    action=''${3:-focus}
+
+    current_window=$(hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r '.address')
+
+    if [ "$current_window" = "null" ] || [ -z "$current_window" ]; then
+      hyprctl dispatch workspace $workspace_change
+      exit 0
+    fi
+
+    if [ "$action" = "move" ]; then
+      hyprctl dispatch movefocus $direction
+      sleep 0.05
+      new_window=$(hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r '.address')
+
+      if [ "$current_window" != "$new_window" ]; then
+        hyprctl dispatch focuswindow address:$current_window
+        sleep 0.05
+        hyprctl dispatch movewindow $direction
+      else
+        hyprctl dispatch movetoworkspace $workspace_change
+      fi
+    else
+      hyprctl dispatch movefocus $direction
+      sleep 0.05
+      new_window=$(hyprctl activewindow -j | ${pkgs.jq}/bin/jq -r '.address')
+
+      if [ "$current_window" = "$new_window" ]; then
+        hyprctl dispatch workspace $workspace_change
+      fi
+    fi
+  '';
+in
+{
   home.packages = with pkgs; [
-    wofi
-    waybar
-    dunst
     wl-clipboard
-    grim
-    slurp
     brightnessctl
     playerctl
+    hyprshot
+    hypridle
+    hyprlock
+    hyprpaper
+    pyprland
+    solaar
+    walker
+    jq
+    nautilus
   ];
 
   wayland.windowManager.hyprland = {
@@ -15,13 +56,16 @@
     settings = {
       "$terminal" = "alacritty";
       "$fileManager" = "nautilus";
-      "$mainMod" = "SUPER";
+      "$mainMod" = "ALT";
 
       monitor = [ ",preferred,auto,auto" ];
 
       env = [
         "XCURSOR_SIZE,24"
         "HYPRCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,rose-pine-hyprcursor"
+        "GTK_THEME,Tokyonight-Dark"
+        "ICON_THEME,Adwaita"
       ];
 
       general = {
@@ -124,24 +168,29 @@
         "$mainMod, M, exit,"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, V, togglefloating,"
-        "$mainMod, space, exec, wofi --show drun"
+        "$mainMod, space, exec, walker"
         "$mainMod, P, pseudo,"
         "$mainMod, period, togglesplit,"
+        "$mainMod, N, exec, swaync-client -t -sw"
+
+        # Power menu
+        "$mainMod, escape, exec, ~/.config/bin/walker_menu_power"
 
         # Screenshots
-        "CTRL SHIFT, 4, exec, grim -g \"$(slurp)\" - | wl-copy"
+        "$mainMod, PRINT, exec, hyprshot -m region"
+        "CTRL SHIFT, 4, exec, hyprshot -m region --clipboard-only"
 
-        # Move focus
+        # Move focus (smart focus for up/down)
         "$mainMod, h, movefocus, l"
         "$mainMod, l, movefocus, r"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, j, movefocus, d"
+        "$mainMod, k, exec, ${smart_focus} u -1"
+        "$mainMod, j, exec, ${smart_focus} d +1"
 
-        # Move windows
+        # Move windows (smart move for up/down)
         "$mainMod SHIFT, h, movewindow, l"
         "$mainMod SHIFT, l, movewindow, r"
-        "$mainMod SHIFT, k, movewindow, u"
-        "$mainMod SHIFT, j, movewindow, d"
+        "$mainMod SHIFT, k, exec, ${smart_focus} u -1 move"
+        "$mainMod SHIFT, j, exec, ${smart_focus} d +1 move"
 
         # Window groups
         "$mainMod, G, togglegroup"
@@ -215,8 +264,113 @@
       # Autostart
       exec-once = [
         "waybar"
-        "dunst"
+        "swaync"
+        "hypridle"
+        "hyprpaper"
+        "solaar --window=hide"
+        "pypr"
       ];
     };
   };
+
+  # Hypridle config
+  xdg.configFile."hypr/hypridle.conf".text = ''
+    general {
+        lock_cmd = pidof hyprlock || hyprlock
+        before_sleep_cmd = loginctl lock-session
+        after_sleep_cmd = hyprctl dispatch dpms on
+    }
+
+    listener {
+        timeout = 300
+        on-timeout = brightnessctl -s set 10
+        on-resume = brightnessctl -r
+    }
+
+    listener {
+        timeout = 900
+        on-timeout = loginctl lock-session
+    }
+
+    listener {
+        timeout = 1800
+        on-timeout = hyprctl dispatch dpms off
+        on-resume = hyprctl dispatch dpms on
+    }
+
+    listener {
+        timeout = 2100
+        on-timeout = systemctl suspend
+    }
+  '';
+
+  # Hyprlock config
+  xdg.configFile."hypr/hyprlock.conf".text = ''
+    general {
+        disable_loading_bar = true
+        no_fade_in = false
+    }
+
+    background {
+        monitor =
+        color = rgba(26,27,38,1.0)
+        path = ~/.config/backgrounds/Staircase.png
+        blur_passes = 2
+    }
+
+    animations {
+        enabled = false
+    }
+
+    input-field {
+        monitor =
+        size = 200, 50
+        outline_thickness = 3
+        dots_size = 0.33
+        dots_spacing = 0.15
+        dots_center = true
+        dots_rounding = -1
+        outer_color = rgb(151515)
+        inner_color = rgba(26,27,38,0.1)
+        font_color = rgba(205,214,244,1.0)
+        fade_on_empty = true
+        fade_timeout = 1000
+        placeholder_text = <i>Input Password...</i>
+        hide_input = false
+        rounding = -1
+        check_color = rgb(204, 136, 34)
+        fail_color = rgb(204, 34, 34)
+        fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
+        fail_transition = 300
+        capslock_color = -1
+        numlock_color = -1
+        bothlock_color = -1
+        invert_numlock = false
+        swap_font_color = false
+        position = 0, -20
+        halign = center
+        valign = center
+    }
+  '';
+
+  # Hyprpaper config
+  xdg.configFile."hypr/hyprpaper.conf".text = ''
+    preload = ~/.config/backgrounds/Staircase.png
+    wallpaper = , ~/.config/backgrounds/Staircase.png
+    splash = false
+  '';
+
+  # Pyprland config
+  xdg.configFile."hypr/pyprland.toml".text = ''
+    [pyprland]
+    plugins = [
+      "scratchpads",
+    ]
+
+    [scratchpads.file]
+    animation = "fromTop"
+    command = "kitty --class yazi -e ranger ~/"
+    class = "yazi"
+    size = "75% 60%"
+  '';
 }

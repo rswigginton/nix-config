@@ -7,6 +7,5 @@
     ../git.nix
     ../neovim.nix
     ../firefox.nix
-    ../hyprland.nix
   ];
 }
