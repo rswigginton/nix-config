@@ -88,6 +88,10 @@
     opencode
     claude-code
 
+    # Shell
+    starship
+    nushell
+
     # System utilities
     htop
     btop
@@ -131,6 +135,8 @@
     enable = true;
     clock24 = true;
   };
+
+  programs.zsh.enable = true;
 
   programs.firefox.enable = true;
 
