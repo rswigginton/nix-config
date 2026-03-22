@@ -48,6 +48,19 @@ add_host() {
   # --- hosts/<hostname>/configuration.nix ---
   mkdir -p "$REPO_ROOT/hosts/$HOSTNAME"
 
+  # Detect bootloader type
+  if [[ -d /sys/firmware/efi ]]; then
+    BOOTLOADER_CONFIG="  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;"
+  else
+    # Find the disk device that holds the root filesystem
+    ROOT_PART=$(findmnt -no SOURCE /)
+    BOOT_DISK=$(lsblk -ndo PKNAME "$ROOT_PART" 2>/dev/null | head -1)
+    BOOT_DISK="/dev/${BOOT_DISK:-sda}"
+    BOOTLOADER_CONFIG="  boot.loader.grub.enable = true;
+  boot.loader.grub.device = \"$BOOT_DISK\";"
+  fi
+
   cat > "$REPO_ROOT/hosts/$HOSTNAME/configuration.nix" << NIXEOF
 {
   inputs,
@@ -64,9 +77,8 @@ add_host() {
     ./hardware-configuration.nix
   ];
 
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Bootloader — auto-detected, verify this is correct
+${BOOTLOADER_CONFIG}
 
   # Hostname
   networking.hostName = "$HOSTNAME";
