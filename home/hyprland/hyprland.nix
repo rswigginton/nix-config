@@ -41,10 +41,6 @@ in
     brightnessctl
     playerctl
     hyprshot
-    hypridle
-    hyprlock
-    hyprpaper
-    pyprland
     solaar
     jq
     nautilus
@@ -272,104 +268,4 @@ in
     };
   };
 
-  # Hypridle config
-  xdg.configFile."hypr/hypridle.conf".text = ''
-    general {
-        lock_cmd = pidof hyprlock || hyprlock
-        before_sleep_cmd = loginctl lock-session
-        after_sleep_cmd = hyprctl dispatch dpms on
-    }
-
-    listener {
-        timeout = 300
-        on-timeout = brightnessctl -s set 10
-        on-resume = brightnessctl -r
-    }
-
-    listener {
-        timeout = 900
-        on-timeout = loginctl lock-session
-    }
-
-    listener {
-        timeout = 1800
-        on-timeout = hyprctl dispatch dpms off
-        on-resume = hyprctl dispatch dpms on
-    }
-
-    listener {
-        timeout = 2100
-        on-timeout = systemctl suspend
-    }
-  '';
-
-  # Hyprlock config
-  xdg.configFile."hypr/hyprlock.conf".text = ''
-    general {
-        disable_loading_bar = true
-        no_fade_in = false
-    }
-
-    background {
-        monitor =
-        color = rgba(26,27,38,1.0)
-        path = ~/.config/backgrounds/Staircase.png
-        blur_passes = 2
-    }
-
-    animations {
-        enabled = false
-    }
-
-    input-field {
-        monitor =
-        size = 200, 50
-        outline_thickness = 3
-        dots_size = 0.33
-        dots_spacing = 0.15
-        dots_center = true
-        dots_rounding = -1
-        outer_color = rgb(151515)
-        inner_color = rgba(26,27,38,0.1)
-        font_color = rgba(205,214,244,1.0)
-        fade_on_empty = true
-        fade_timeout = 1000
-        placeholder_text = <i>Input Password...</i>
-        hide_input = false
-        rounding = -1
-        check_color = rgb(204, 136, 34)
-        fail_color = rgb(204, 34, 34)
-        fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
-        fail_transition = 300
-        capslock_color = -1
-        numlock_color = -1
-        bothlock_color = -1
-        invert_numlock = false
-        swap_font_color = false
-        position = 0, -20
-        halign = center
-        valign = center
-    }
-  '';
-
-  # Hyprpaper config
-  xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ~/.config/backgrounds/Staircase.png
-    wallpaper = , ~/.config/backgrounds/Staircase.png
-    splash = false
-  '';
-
-  # Pyprland config
-  xdg.configFile."hypr/pyprland.toml".text = ''
-    [pyprland]
-    plugins = [
-      "scratchpads",
-    ]
-
-    [scratchpads.file]
-    animation = "fromTop"
-    command = "kitty --class yazi -e ranger ~/"
-    class = "yazi"
-    size = "75% 60%"
-  '';
 }
