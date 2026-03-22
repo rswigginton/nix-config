@@ -35,7 +35,7 @@
 
       mkHost = hostname: nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
-        modules = [ ./hosts/${hostname} ];
+        modules = [ ./hosts/${hostname}/configuration.nix ];
       };
 
       mkHome = hostname: home-manager.lib.homeManagerConfiguration {
