@@ -45,30 +45,22 @@ add_host() {
 
   echo "Creating host: $HOSTNAME"
 
-  # --- hosts/<hostname>/default.nix ---
+  # --- hosts/<hostname>/configuration.nix ---
   mkdir -p "$REPO_ROOT/hosts/$HOSTNAME"
 
-  cat > "$REPO_ROOT/hosts/$HOSTNAME/default.nix" << 'NIXEOF'
-{ inputs, outputs, lib, config, pkgs, ... }:
+  cat > "$REPO_ROOT/hosts/$HOSTNAME/configuration.nix" << NIXEOF
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
     ../common
-    ./configuration.nix
-  ];
-
-  # Enable home-manager for the robert user
-  home-manager.users = {
-    robert = import ../../home/robert/HOSTNAME_PLACEHOLDER.nix;
-  };
-}
-NIXEOF
-  sed -i "s/HOSTNAME_PLACEHOLDER/$HOSTNAME/g" "$REPO_ROOT/hosts/$HOSTNAME/default.nix"
-
-  # --- hosts/<hostname>/configuration.nix ---
-  cat > "$REPO_ROOT/hosts/$HOSTNAME/configuration.nix" << NIXEOF
-{ ... }: {
-  imports = [
     ./hardware-configuration.nix
   ];
 
@@ -79,6 +71,26 @@ NIXEOF
   # Hostname
   networking.hostName = "$HOSTNAME";
 
+  # User account
+  users.users.robert = {
+    isNormalUser = true;
+    description = "Robert";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    shell = pkgs.fish;
+  };
+
+  # Host-specific packages
+  environment.systemPackages = with pkgs; [
+  ];
+
+  # Enable home-manager for the robert user
+  home-manager.users = {
+    robert = import ../../home/robert/$HOSTNAME.nix;
+  };
+
   # System state version
   system.stateVersion = "25.11";
 }
@@ -86,12 +98,12 @@ NIXEOF
 
   # --- home/robert/<hostname>.nix ---
   cat > "$REPO_ROOT/home/robert/$HOSTNAME.nix" << 'NIXEOF'
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./home.nix
-    ../common
-    ../features/cli
-    ../features/desktop
+    ../common.nix
+    ../git.nix
   ];
 }
 NIXEOF
@@ -107,14 +119,12 @@ NIXEOF
 
   # Stage new files so Nix flakes can see them (flakes ignore untracked files)
   git -C "$REPO_ROOT" add \
-    "hosts/$HOSTNAME/default.nix" \
     "hosts/$HOSTNAME/configuration.nix" \
     "home/robert/$HOSTNAME.nix" \
     flake.nix
 
   echo ""
   echo "Done! Created:"
-  echo "  hosts/$HOSTNAME/default.nix"
   echo "  hosts/$HOSTNAME/configuration.nix"
   echo "  home/robert/$HOSTNAME.nix"
   echo "  Updated flake.nix"
@@ -164,7 +174,7 @@ remove_host() {
   fi
 
   # Remove host directory
-  rm -rf "$REPO_ROOT/hosts/$HOSTNAME"
+  rm -rf "${REPO_ROOT:?}/hosts/$HOSTNAME"
 
   # Remove home config
   rm -f "$REPO_ROOT/home/robert/$HOSTNAME.nix"
@@ -172,6 +182,9 @@ remove_host() {
   # Remove from flake.nix
   sed -i "/^[[:space:]]*$HOSTNAME = mkHost \"$HOSTNAME\";$/d" "$REPO_ROOT/flake.nix"
   sed -i "/^[[:space:]]*\"robert@$HOSTNAME\" = mkHome \"$HOSTNAME\";$/d" "$REPO_ROOT/flake.nix"
+
+  # Stage removals
+  git -C "$REPO_ROOT" add -A "hosts/$HOSTNAME" "home/robert/$HOSTNAME.nix" flake.nix
 
   echo ""
   echo "Done! Removed host '$HOSTNAME'."

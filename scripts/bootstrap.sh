@@ -47,7 +47,7 @@ if [[ ! -d "$CLONE_DIR/hosts/$HOSTNAME" ]]; then
   echo "No config found for hostname '$HOSTNAME'."
   echo "Either:"
   echo "  1. Rename this machine:  sudo hostnamectl set-hostname <name>"
-  echo "  2. Create a new config:  cd $CLONE_DIR && ./scripts/add-host.sh $HOSTNAME"
+  echo "  2. Create a new config:  cd $CLONE_DIR && ./scripts/host.sh add $HOSTNAME"
   echo ""
   echo "Then re-run this script or proceed manually."
   exit 1
