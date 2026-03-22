@@ -1,6 +1,13 @@
 # Common configuration for all hosts
 
-{ lib, inputs, outputs, pkgs, ... }: {
+{
+  lib,
+  inputs,
+  outputs,
+  pkgs,
+  ...
+}:
+{
   imports = [
     inputs.home-manager.nixosModules.home-manager
   ];
@@ -56,7 +63,7 @@
   # Security
   security.sudo.wheelNeedsPassword = false;
 
-# Display manager
+  # Display manager
   services.displayManager.ly.enable = true;
 
   # Common system packages for all hosts
@@ -95,7 +102,13 @@
 
     # Cloud tools
     awscli2
+
+    # kubernetes
     k9s
+    dyff
+    kubectl
+    kustomize
+    kubernetes-helm
 
     # Network tools
     dig
@@ -144,8 +157,9 @@
       options = "--delete-older-than 30d";
     };
     optimise.automatic = true;
-    registry = (lib.mapAttrs (_: flake: { inherit flake; }))
-      ((lib.filterAttrs (_: lib.isType "flake")) inputs);
+    registry = (lib.mapAttrs (_: flake: { inherit flake; })) (
+      (lib.filterAttrs (_: lib.isType "flake")) inputs
+    );
     nixPath = [ "/etc/nix/path" ];
   };
 }
