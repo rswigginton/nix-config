@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./home.nix
     ../common.nix
@@ -8,7 +9,5 @@
     ../neovim.nix
     ../firefox.nix
     ../hyprland.nix
-    ../k8s.nix
-    ../discord.nix
   ];
 }
