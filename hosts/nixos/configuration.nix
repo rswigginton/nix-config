@@ -10,11 +10,14 @@
 {
   imports = [
     ../common
+    ../common/cosmic.nix
+    ../common/fish.nix
     ./hardware-configuration.nix
   ];
 
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/vda";
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Hostname
@@ -28,7 +31,7 @@
       "networkmanager"
       "wheel"
     ];
-    #shell = pkgs.fish;
+    shell = pkgs.fish;
   };
 
   # Host-specific packages
@@ -36,9 +39,9 @@
   ];
 
   # Enable home-manager for the robert user
-  home-manager.users = {
-    robert = import ../../home/robert/nixos.nix;
-  };
+  #home-manager.users = {
+  #  robert = import ../../home/robert/nixos.nix;
+  #};
 
   # System state version
   system.stateVersion = "25.11";
