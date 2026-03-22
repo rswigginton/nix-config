@@ -11,11 +11,13 @@
     enable = true;
     enableFishIntegration = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.bat = { enable = true; };
@@ -30,6 +32,7 @@
     enable = true;
     enableFishIntegration = true;
     enableBashIntegration = true;
+    enableZshIntegration = true;
     extraOptions = [ "-l" "--icons" "--git" "-a" ];
   };
 

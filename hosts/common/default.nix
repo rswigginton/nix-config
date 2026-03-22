@@ -91,6 +91,7 @@
     # Shell
     starship
     nushell
+    zsh-abbr
 
     # System utilities
     htop
@@ -136,7 +137,11 @@
     clock24 = true;
   };
 
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+  };
 
   programs.firefox.enable = true;
 
