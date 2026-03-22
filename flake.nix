@@ -59,10 +59,12 @@
       nixosConfigurations = {
         rw-dsk-1 = mkHost "rw-dsk-1";
         rw-bl-ser8 = mkHost "rw-bl-ser8";
+        nixos = mkHost "nixos";
       };
       homeConfigurations = {
         "robert@rw-dsk-1" = mkHome "rw-dsk-1";
         "robert@rw-bl-ser8" = mkHome "rw-bl-ser8";
+        "robert@nixos" = mkHome "nixos";
       };
     };
 }
