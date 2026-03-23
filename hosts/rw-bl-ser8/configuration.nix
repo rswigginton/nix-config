@@ -41,6 +41,7 @@
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
+    acli
     vivaldi
     slack
     zoom-us
