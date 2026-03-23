@@ -121,6 +121,7 @@
 
     # Text processing
     jq
+    yq
     ripgrep
     fd
   ];
