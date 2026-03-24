@@ -37,6 +37,10 @@
     shell = pkgs.fish;
   };
 
+  # QEMU/KVM guest services
+  services.qemuGuest.enable = true;
+  services.spice-vdagentd.enable = true;
+
   # Host-specific packages
   environment.systemPackages = with pkgs; [
   ];

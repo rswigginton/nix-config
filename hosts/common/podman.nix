@@ -1,8 +1,11 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     distrobox
     lazydocker
     podman-compose
+    podman-desktop
+    kind
     (writeShellScriptBin "docker-compose" ''exec podman-compose "$@"'')
   ];
 

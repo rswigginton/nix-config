@@ -19,6 +19,11 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     nur.url = "github:nix-community/NUR";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
+    elephant.url = "github:abenz1267/elephant";
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.elephant.follows = "elephant";
+    };
   };
 
   outputs = { self, home-manager, nixpkgs, nur, ... }@inputs:
