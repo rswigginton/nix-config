@@ -84,6 +84,7 @@
     lazygit
     just
     pre-commit
+    golangci-lint
 
     # Desktop applications
     alacritty
