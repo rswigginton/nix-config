@@ -82,6 +82,7 @@
     nodejs
     go
     lazygit
+    just
 
     # Desktop applications
     alacritty
