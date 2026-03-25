@@ -83,6 +83,7 @@
     go
     lazygit
     just
+    pre-commit
 
     # Desktop applications
     alacritty
