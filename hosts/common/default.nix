@@ -116,6 +116,7 @@
     kubectl
     kustomize
     kubernetes-helm
+    jsonnet
 
     # Network tools
     dig
