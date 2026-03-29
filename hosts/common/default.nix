@@ -106,6 +106,7 @@
     gnumake
     eza
     gum
+    flameshot
 
     # Cloud tools
     awscli2
