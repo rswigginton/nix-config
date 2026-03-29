@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs.git = {
     enable = true;
 
@@ -18,6 +19,7 @@
       };
 
       credential."https://github.com".helper = "!${pkgs.gh}/bin/gh auth git-credential";
+      credential."https://gitlab.com".helper = "!${pkgs.glab}/bin/glab auth git-credential";
 
       "includeIf \"gitdir:~/repos/Nestio/\"" = {
         path = "~/.config/git/work";
