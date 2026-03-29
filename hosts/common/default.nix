@@ -77,6 +77,7 @@
 
     # Development tools
     gh
+    glab
     neovim
     gcc
     nodejs
