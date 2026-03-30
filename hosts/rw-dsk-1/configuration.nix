@@ -46,6 +46,7 @@
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     vivaldi
+    zoom-us
   ];
 
   # Enable home-manager for the robert user
