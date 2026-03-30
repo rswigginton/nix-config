@@ -114,6 +114,7 @@
 
     # kubernetes
     k9s
+    popeye
     dyff
     kubectl
     kustomize
