@@ -120,6 +120,7 @@
     kustomize
     kubernetes-helm
     jsonnet
+    kubectl-cnpg
 
     # Network tools
     dig
