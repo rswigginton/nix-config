@@ -13,6 +13,7 @@
 
   virtualisation = {
     containers.enable = true;
+    containers.registries.insecure = [ "localhost:5000" ];
     podman = {
       enable = true;
       dockerCompat = true;
