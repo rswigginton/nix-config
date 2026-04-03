@@ -129,7 +129,7 @@
     kubectl-cnpg
     kind
 
-    terrform
+    terraform
 
     # Network tools
     dig
