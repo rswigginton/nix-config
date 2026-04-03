@@ -130,7 +130,7 @@
     kind
 
     terraform
-
+    ansible
     # Network tools
     dig
     nmap
