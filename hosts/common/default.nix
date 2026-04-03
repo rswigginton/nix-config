@@ -86,6 +86,8 @@
     just
     pre-commit
     golangci-lint
+    direnv
+    nix-direnv
 
     # Desktop applications
     alacritty
