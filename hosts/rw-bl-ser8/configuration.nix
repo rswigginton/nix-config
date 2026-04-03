@@ -11,7 +11,8 @@
   imports = [
     ../common
     ../common/fish.nix
-    ../common/podman.nix
+    # ../common/podman.nix
+    ../common/docker.nix
     ../common/cosmic.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
@@ -34,6 +35,7 @@
       "networkmanager"
       "wheel"
       "podman"
+      "docker"
       "libvirtd"
     ];
     shell = pkgs.fish;

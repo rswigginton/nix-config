@@ -112,6 +112,10 @@
     # Cloud tools
     awscli2
 
+    # Container tools
+    distrobox
+    lazydocker
+
     # kubernetes
     k9s
     popeye
@@ -121,6 +125,7 @@
     kubernetes-helm
     jsonnet
     kubectl-cnpg
+    kind
 
     # Network tools
     dig
