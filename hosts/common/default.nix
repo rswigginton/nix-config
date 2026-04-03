@@ -129,6 +129,8 @@
     kubectl-cnpg
     kind
 
+    terrform
+
     # Network tools
     dig
     nmap
