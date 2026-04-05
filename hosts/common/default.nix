@@ -128,6 +128,7 @@
     jsonnet
     kubectl-cnpg
     kind
+    argocd
 
     terraform
     ansible
