@@ -1,4 +1,7 @@
 { pkgs, ... }: {
   services.desktopManager.cosmic.enable = true;
-  environment.systemPackages = [ pkgs.cosmic-ext-applet-minimon ];
+  environment.systemPackages = with pkgs; [
+    cosmic-ext-applet-minimon
+    wl-clipboard
+  ];
 }
