@@ -154,6 +154,9 @@
   programs.tmux = {
     enable = true;
     clock24 = true;
+    extraConfig = ''
+      set-option -g update-environment "WAYLAND_DISPLAY DISPLAY XAUTHORITY"
+    '';
   };
 
   programs.zsh = {
