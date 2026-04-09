@@ -47,6 +47,7 @@
     vivaldi
     slack
     zoom-us
+    cursor-cli
   ];
 
   # Enable home-manager for the robert user
