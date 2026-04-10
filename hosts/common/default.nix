@@ -100,6 +100,7 @@
     nushell
 
     # System utilities
+    openssl
     htop
     btop
     unzip
