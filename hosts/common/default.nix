@@ -131,6 +131,7 @@
     kubectl-cnpg
     kind
     argocd
+    kubebuilder
 
     terraform
     ansible
