@@ -175,6 +175,13 @@
     polkitPolicyOwners = [ "robert" ];
   };
 
+  environment.etc."1password/custom_allowed_browsers" = {
+    text = ''
+      vivaldi-bin
+    '';
+    mode = "0755";
+  };
+
   environment.variables.EDITOR = "nvim";
   environment.variables.VISUAL = "nvim";
 
