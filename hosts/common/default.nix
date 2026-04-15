@@ -182,6 +182,9 @@
     mode = "0755";
   };
 
+  # Allow dynamically linked binaries (e.g. cursor-agent, VS Code extensions)
+  programs.nix-ld.enable = true;
+
   environment.variables.EDITOR = "nvim";
   environment.variables.VISUAL = "nvim";
 
