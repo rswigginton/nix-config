@@ -112,6 +112,7 @@
     eza
     gum
     flameshot
+    television
 
     # Cloud tools
     awscli2
