@@ -65,11 +65,15 @@
         rw-dsk-1 = mkHost "rw-dsk-1";
         rw-bl-ser8 = mkHost "rw-bl-ser8";
         nixos = mkHost "nixos";
+        nix-pl-vm = mkHost "nix-pl-vm";
+        rw-pl-vm = mkHost "rw-pl-vm";
       };
       homeConfigurations = {
         "robert@rw-dsk-1" = mkHome "rw-dsk-1";
         "robert@rw-bl-ser8" = mkHome "rw-bl-ser8";
         "robert@nixos" = mkHome "nixos";
+        "robert@nix-pl-vm" = mkHome "nix-pl-vm";
+        "robert@rw-pl-vm" = mkHome "rw-pl-vm";
       };
     };
 }
