@@ -45,8 +45,7 @@
     shell = pkgs.fish;
   };
 
-
-  hardware.openrazer.enable - true;
+  hardware.openrazer.enable = true;
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
