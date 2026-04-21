@@ -41,6 +41,7 @@
       "docker"
       "libvirtd"
       "openrazer"
+      "plugdev"
     ];
     shell = pkgs.fish;
   };
