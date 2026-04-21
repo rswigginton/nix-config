@@ -40,14 +40,19 @@
       "podman"
       "docker"
       "libvirtd"
+      "openrazer"
     ];
     shell = pkgs.fish;
   };
+
+
+  hardware.openrazer.enable - true;
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     vivaldi
     zoom-us
+    polychromatic
   ];
 
   # Enable home-manager for the robert user
