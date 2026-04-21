@@ -40,19 +40,29 @@
       "podman"
       "docker"
       "libvirtd"
-      "openrazer"
       "plugdev"
     ];
     shell = pkgs.fish;
   };
 
-  hardware.openrazer.enable = true;
+  services.input-remapper.enable = true;
+
+  # Allow input-remapper pkexec without auth agent (NixOS store path
+  # doesn't match /usr/bin in the upstream polkit policy)
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id === "org.freedesktop.policykit.exec" &&
+          action.lookup("program").indexOf("input-remapper") !== -1 &&
+          subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     vivaldi
     zoom-us
-    polychromatic
   ];
 
   # Enable home-manager for the robert user
