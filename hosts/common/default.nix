@@ -159,9 +159,7 @@
     clock24 = true;
   };
 
-  programs.zellij = {
-    enable = true;
-  };
+  programs.zellij.enable = true;
 
   programs.zsh = {
     enable = true;
