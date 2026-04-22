@@ -113,6 +113,7 @@
     gum
     flameshot
     television
+    zellij
 
     # Cloud tools
     awscli2
@@ -158,8 +159,6 @@
     enable = true;
     clock24 = true;
   };
-
-  programs.zellij.enable = true;
 
   programs.zsh = {
     enable = true;
