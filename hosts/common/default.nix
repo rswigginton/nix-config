@@ -90,6 +90,25 @@
     direnv
     nix-direnv
 
+    # Neovim runtime deps (config managed by chezmoi)
+    ripgrep
+    fd
+    tree-sitter
+    lua-language-server
+    nil
+    typescript-language-server
+    vscode-langservers-extracted
+    gopls
+    rust-analyzer
+    terraform-ls
+    dockerfile-language-server
+    yaml-language-server
+    pyright
+    stylua
+    prettierd
+    nixfmt
+    ruff
+
     # Desktop applications
     alacritty
     opencode
