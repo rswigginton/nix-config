@@ -63,6 +63,7 @@
   environment.systemPackages = with pkgs; [
     vivaldi
     zoom-us
+    discord-ptb
   ];
 
   # Enable home-manager for the robert user
