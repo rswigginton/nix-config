@@ -5,5 +5,6 @@
     ../common.nix
     ../atuin.nix
     ../git.nix
+    ../hyprland
   ];
 }
