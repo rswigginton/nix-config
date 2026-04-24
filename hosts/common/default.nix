@@ -107,6 +107,8 @@
     stylua
     prettierd
     nixfmt
+    statix
+    deadnix
     ruff
 
     # Desktop applications

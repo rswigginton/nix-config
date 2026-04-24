@@ -51,7 +51,7 @@ in
     settings = {
       "$terminal" = "alacritty";
       "$fileManager" = "nautilus";
-      "$mainMod" = "SUPER";
+      "$mainMod" = "ALT";
 
       monitor = [ ",preferred,auto,auto" ];
 

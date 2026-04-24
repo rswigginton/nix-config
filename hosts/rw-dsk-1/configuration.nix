@@ -14,7 +14,7 @@
     ../common/docker.nix
     ../common/steam.nix
     ../common/cosmic.nix
-    # ../common/hyprland.nix
+    ../common/hyprland.nix
     # ../common/kde.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
