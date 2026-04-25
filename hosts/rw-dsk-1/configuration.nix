@@ -15,7 +15,7 @@
     ../common/steam.nix
     ../common/cosmic.nix
     ../common/hyprland.nix
-    # ../common/kde.nix
+    ../common/kde.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
     ./hardware-configuration.nix
