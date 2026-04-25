@@ -12,6 +12,7 @@
     ../common
     ../common/fish.nix
     ../common/cosmic.nix
+    ../common/kde.nix
     ../common/docker.nix
     ./hardware-configuration.nix
   ];
@@ -41,6 +42,20 @@
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     ferdium
+  ];
+
+  # Parallels VM: disable GPU acceleration in 1Password to avoid rendering issues
+  nixpkgs.overlays = [
+    (final: prev: {
+      _1password-gui = prev.symlinkJoin {
+        name = "1password-gui";
+        paths = [ prev._1password-gui ];
+        nativeBuildInputs = [ prev.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/1password --add-flags "--disable-gpu"
+        '';
+      };
+    })
   ];
 
   # Enable home-manager for the robert user
