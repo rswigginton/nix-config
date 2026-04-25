@@ -263,7 +263,7 @@ in
         "hypridle"
         "hyprpaper"
         "solaar --window=hide"
-        "pypr"
+        # "pypr"
       ];
     };
   };
