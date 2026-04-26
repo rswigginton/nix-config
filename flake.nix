@@ -11,22 +11,17 @@
   '';
 
   inputs = {
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
-    nur.url = "github:nix-community/NUR";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    elephant.url = "github:abenz1267/elephant";
-    walker = {
-      url = "github:abenz1267/walker";
-      inputs.elephant.follows = "elephant";
-    };
   };
 
-  outputs = { self, home-manager, nixpkgs, nur, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      ...
+    }@inputs:
     let
       inherit (self) outputs;
       systems = [
@@ -38,28 +33,15 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
-      mkHost = hostname: nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs outputs; };
-        modules = [ ./hosts/${hostname}/configuration.nix ];
-      };
-
-      mkHome = hostname: home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          overlays = [
-            outputs.overlays.additions
-            outputs.overlays.modifications
-            outputs.overlays.stable-packages
-            outputs.overlays.nur
-          ];
-          config.allowUnfree = true;
+      mkHost =
+        hostname:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [ ./hosts/${hostname}/configuration.nix ];
         };
-        extraSpecialArgs = { inherit inputs outputs; };
-        modules = [ ./home/robert/${hostname}.nix ];
-      };
-    in {
-      packages =
-        forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+    in
+    {
+      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       overlays = import ./overlays { inherit inputs; };
       nixosConfigurations = {
         rw-dsk-1 = mkHost "rw-dsk-1";
@@ -67,13 +49,6 @@
         nixos = mkHost "nixos";
         nix-pl-vm = mkHost "nix-pl-vm";
         rw-pl-vm = mkHost "rw-pl-vm";
-      };
-      homeConfigurations = {
-        "robert@rw-dsk-1" = mkHome "rw-dsk-1";
-        "robert@rw-bl-ser8" = mkHome "rw-bl-ser8";
-        "robert@nixos" = mkHome "nixos";
-        "robert@nix-pl-vm" = mkHome "nix-pl-vm";
-        "robert@rw-pl-vm" = mkHome "rw-pl-vm";
       };
     };
 }

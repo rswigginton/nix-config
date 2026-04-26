@@ -50,11 +50,6 @@
     cursor-cli
   ];
 
-  # Enable home-manager for the robert user
-  home-manager.users = {
-    robert = import ../../home/robert/rw-bl-ser8.nix;
-  };
-
   # System state version
   system.stateVersion = "25.11";
 }

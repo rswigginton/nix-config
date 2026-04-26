@@ -8,17 +8,6 @@
   ...
 }:
 {
-  imports = [
-    inputs.home-manager.nixosModules.home-manager
-  ];
-
-  # Home-manager common settings
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = { inherit inputs outputs; };
-    backupFileExtension = "backup";
-  };
 
   nixpkgs = {
     overlays = [
@@ -74,6 +63,7 @@
     git
     curl
     chezmoi
+    atuin
 
     # Development tools
     gh
@@ -135,6 +125,13 @@
     flameshot
     television
     zellij
+    bat
+    zoxide
+    httpie
+    progress
+    tldr
+    trash-cli
+    yazi
 
     # Cloud tools
     awscli2
@@ -168,6 +165,10 @@
     yq
     ripgrep
     fd
+
+    # GTK THEMES
+    tokyonight-gtk-theme
+    papirus-icon-theme
   ];
 
   # Fonts
