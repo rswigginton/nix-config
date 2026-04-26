@@ -12,7 +12,7 @@
       close_when_open = true;
       click_to_close = true;
       single_click_activation = true;
-      theme = "tokyo-night";
+      theme = "breeze-dark";
 
       shell = {
         exclusive_zone = -1;
@@ -74,178 +74,182 @@
     };
 
     themes = {
-      tokyo-night = {
+      breeze-dark = {
         style = ''
-          /* Tokyo Night color scheme */
-          @define-color selected-text #7dcfff;
-          @define-color text #cfc9c2;
-          @define-color base #1a1b26;
-          @define-color border #33ccff;
-          @define-color foreground #cfc9c2;
-          @define-color background #1a1b26;
-
-          /* Reset all elements */
-          #window,
-          #box,
-          #search,
-          #password,
-          #input,
-          #prompt,
-          #clear,
-          #typeahead,
-          #list,
-          child,
-          scrollbar,
-          slider,
-          #item,
-          #text,
-          #label,
-          #sub,
-          #activationlabel {
-            all: unset;
-          }
+          /* Breeze Dark palette */
+          @define-color window_bg_color #1b1e20;
+          @define-color surface_bg_color #232629;
+          @define-color overlay_bg_color #2a2e32;
+          @define-color accent_bg_color  #3daee9;
+          @define-color theme_fg_color   #fcfcfc;
+          @define-color subtle_fg_color  #bdc3c7;
+          @define-color muted_fg_color   #7f8c8d;
+          @define-color cyan_color       #1abc9c;
+          @define-color magenta_color    #9b59b6;
+          @define-color border_color     #4d5359;
+          @define-color error_bg_color   #ed1515;
+          @define-color error_fg_color   #fcfcfc;
 
           * {
+            all: unset;
             font-family: 'JetBrainsMono Nerd Font', monospace;
-            font-size: 18px;
+            font-size: 14px;
           }
 
-          /* Window */
-          #window {
+          .window {
             background: transparent;
-            color: @text;
+            color: @theme_fg_color;
           }
 
-          /* Main box container */
-          #box {
-            background: alpha(@base, 0.95);
-            padding: 20px;
-            border: 2px solid @border;
-            border-radius: 0px;
+          .box-wrapper {
+            background: @window_bg_color;
+            padding: 16px;
+            border: 2px solid @border_color;
+            border-radius: 14px;
+            box-shadow:
+              0 19px 38px rgba(0, 0, 0, 0.45),
+              0 15px 12px rgba(0, 0, 0, 0.30);
           }
 
-          /* Search container */
-          #search {
-            background: @base;
-            padding: 10px;
-            margin-bottom: 0;
+          .box {
           }
 
-          /* Hide prompt icon */
-          #prompt {
-            opacity: 0;
-            min-width: 0;
-            margin: 0;
+          .search-container {
+            background: @surface_bg_color;
+            border-radius: 10px;
           }
 
-          /* Hide clear button */
-          #clear {
-            opacity: 0;
-            min-width: 0;
+          .input {
+            background: transparent;
+            caret-color: @cyan_color;
+            color: @theme_fg_color;
+            padding: 10px 12px;
           }
 
-          /* Input field */
-          #input {
-            background: none;
-            color: @text;
-            padding: 0;
+          .input placeholder {
+            color: @muted_fg_color;
           }
 
-          #input placeholder {
+          .input selection {
+            background: @overlay_bg_color;
+            color: @theme_fg_color;
+          }
+
+          .placeholder {
+            color: @muted_fg_color;
+            font-style: italic;
+          }
+
+          .elephant-hint {
+            color: @magenta_color;
+          }
+
+          .scroll {
+          }
+
+          .list {
+            color: @theme_fg_color;
+          }
+
+          .item-box {
+            padding: 8px 12px;
+            border-radius: 8px;
+          }
+
+          child:selected .item-box,
+          row:selected .item-box {
+            background: alpha(@accent_bg_color, 0.25);
+          }
+
+          .item-text-box {
+          }
+
+          .item-text {
+            color: @theme_fg_color;
+            font-weight: 500;
+          }
+
+          .item-subtext {
+            color: @subtle_fg_color;
+            font-size: 12px;
+            opacity: 0.75;
+          }
+
+          child:selected .item-text {
+            color: @cyan_color;
+          }
+
+          child:selected .item-subtext {
+            color: @theme_fg_color;
+            opacity: 0.9;
+          }
+
+          .item-quick-activation {
+            background: alpha(@accent_bg_color, 0.25);
+            border-radius: 5px;
+            padding: 6px 10px;
+            color: @cyan_color;
+          }
+
+          .calc .item-text {
+            font-size: 22px;
+            color: @magenta_color;
+          }
+
+          .preview {
+            border: 1px solid alpha(@accent_bg_color, 0.25);
+            border-radius: 10px;
+            color: @theme_fg_color;
+          }
+
+          .preview-box {
+            color: @theme_fg_color;
+          }
+
+          .keybinds {
+            padding-top: 10px;
+            border-top: 1px solid @overlay_bg_color;
+            font-size: 12px;
+            color: @subtle_fg_color;
+          }
+
+          .keybind-bind {
+            text-transform: lowercase;
             opacity: 0.5;
-            color: @text;
           }
 
-          /* Hide typeahead */
-          #typeahead {
-            opacity: 0;
+          .keybind-label {
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid @muted_fg_color;
           }
 
-          /* List */
-          #list {
-            background: transparent;
+          .keybind-button:hover {
+            opacity: 0.85;
           }
 
-          /* List items */
-          child {
-            padding: 0px 12px;
-            background: transparent;
-            border-radius: 0;
+          .error {
+            padding: 10px;
+            background: @error_bg_color;
+            color: @error_fg_color;
+            border-radius: 8px;
           }
 
-          child:selected,
-          child:hover {
-            background: transparent;
+          :not(.calc).current {
+            font-style: italic;
+            color: @magenta_color;
           }
 
-          /* Item layout */
-          #item {
-            padding: 0;
-          }
-
-          /* Icon */
-          #icon {
-            margin-right: 10px;
-            -gtk-icon-transform: scale(0.7);
-          }
-
-          /* Text */
-          #text {
-            color: @text;
-            padding: 14px 0;
-          }
-
-          #label {
-            font-weight: normal;
-          }
-
-          /* Selected state */
-          child:selected #text,
-          child:selected #label,
-          child:hover #text,
-          child:hover #label {
-            color: @selected-text;
-          }
-
-          /* Hide sub text */
-          #sub {
-            opacity: 0;
-            font-size: 0;
-            min-height: 0;
-          }
-
-          /* Hide activation label */
-          #activationlabel {
-            opacity: 0;
-            min-width: 0;
-          }
-
-          /* Scrollbar styling */
           scrollbar {
             opacity: 0;
           }
 
-          /* Hide spinner */
-          #spinner {
-            opacity: 0;
-          }
-
-          /* Hide AI elements */
-          #aiScroll,
-          #aiList,
-          .aiItem {
-            opacity: 0;
-            min-height: 0;
-          }
-
-          /* Bar entry (switcher) */
-          #bar {
-            opacity: 0;
-            min-height: 0;
-          }
-
-          .barentry {
-            opacity: 0;
+          popover {
+            background: @surface_bg_color;
+            border: 1px solid @border_color;
+            border-radius: 12px;
+            padding: 8px;
+            color: @theme_fg_color;
           }
         '';
       };

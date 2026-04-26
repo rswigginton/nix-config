@@ -60,15 +60,31 @@ in
         "HYPRCURSOR_SIZE,24"
         "HYPRCURSOR_THEME,rose-pine-hyprcursor"
         "GTK_THEME,Tokyonight-Dark"
-        "ICON_THEME,Adwaita"
+        "ICON_THEME,Papirus-Dark"
+
+        "GDK_BACKEND,wayland,x11,*"
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "SDL_VIDEODRIVER,wayland,x11"
+        "MOZ_ENABLE_WAYLAND,1"
+        "ELECTRON_OZONE_PLATFORM_HINT,wayland"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_DESKTOP,Hyprland"
       ];
+
+      xwayland = {
+        force_zero_scaling = true;
+      };
+
+      ecosystem = {
+        no_update_news = true;
+      };
 
       general = {
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
+        "col.active_border" = "rgba(7aa2f7ee) rgba(bb9af7ee) 45deg";
+        "col.inactive_border" = "rgba(414868aa)";
         resize_on_border = false;
         allow_tearing = false;
         layout = "dwindle";
@@ -94,13 +110,17 @@ in
       };
 
       group = {
-        "col.border_active" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.border_inactive" = "rgba(595959aa)";
+        "col.border_active" = "rgba(7aa2f7ee) rgba(bb9af7ee) 45deg";
+        "col.border_inactive" = "rgba(414868aa)";
         groupbar = {
-          "col.inactive" = "rgba(595959aa)";
-          "col.active" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+          "col.inactive" = "rgba(414868aa)";
+          "col.active" = "rgba(7aa2f7ee) rgba(bb9af7ee) 45deg";
           stacked = false;
           render_titles = false;
+          rounding = 5;
+          gradient_rounding = 5;
+          round_only_edges = false;
+          gradient_round_only_edges = false;
         };
       };
 
@@ -163,13 +183,13 @@ in
         "$mainMod, M, exit,"
         "$mainMod, E, exec, $fileManager"
         "$mainMod, V, togglefloating,"
-        "$mainMod, space, exec, walker"
+        "$mainMod, space, exec, rofi -show drun"
         "$mainMod, P, pseudo,"
         "$mainMod, period, togglesplit,"
         "$mainMod, N, exec, swaync-client -t -sw"
 
         # Power menu
-        "$mainMod, escape, exec, ~/.config/bin/walker_menu_power"
+        "$mainMod, escape, exec, ~/.config/bin/rofi_menu_power"
 
         # Screenshots
         "$mainMod, PRINT, exec, hyprshot -m region"

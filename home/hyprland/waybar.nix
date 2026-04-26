@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
     waybar
+    pwvucontrol
   ];
 
   xdg.configFile."waybar/config.jsonc".text = builtins.toJSON {
@@ -68,7 +69,7 @@
     };
     "memory#icon" = {
       interval = 3;
-      format = "";
+      format = "󰘚";
       tooltip = false;
     };
     "memory#text" = {
@@ -122,12 +123,13 @@
     };
     pulseaudio = {
       format = "{icon}";
-      on-click-right = "pamixer -t";
+      on-click = "pwvucontrol";
+      on-click-right = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
       tooltip-format = "Playing at {volume}%";
       scroll-step = 5;
       format-muted = "󰝟";
       format-icons = {
-        default = [ "" "" "" ];
+        default = [ "󰕿" "󰖀" "󰕾" ];
       };
     };
     "custom/notification" = {
@@ -148,6 +150,7 @@
   };
 
   xdg.configFile."waybar/style.css".text = ''
+    /* Tokyo Night palette */
     * {
       background-color: #1a1b26;
       color: #c0caf5;

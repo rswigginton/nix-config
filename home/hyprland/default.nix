@@ -7,6 +7,6 @@
     ./hyprpaper.nix
     ./waybar.nix
     ./swaync.nix
-    ./walker.nix
+    ./rofi.nix
   ];
 }
