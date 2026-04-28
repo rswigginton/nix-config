@@ -121,6 +121,7 @@
     which
     gnumake
     eza
+    fzf
     gum
     flameshot
     television
