@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs.hyprland.enable = true;
 
   # Use Hyprland's portal without conflicting with other DEs
@@ -9,6 +10,7 @@
 
   environment.systemPackages = with pkgs; [
     wl-clipboard
+    wl-clip-persist
     brightnessctl
     playerctl
     hyprshot
@@ -25,6 +27,7 @@
     rofi-calc
     rofi-emoji
     rofi-file-browser
-    pyprland
+    satty
+    libnotify
   ];
 }
