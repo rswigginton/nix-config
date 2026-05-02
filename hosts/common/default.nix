@@ -103,7 +103,7 @@
 
     # Desktop applications
     alacritty
-    opencode
+    kitty
     claude-code
 
     # Shell
@@ -133,6 +133,7 @@
     tldr
     trash-cli
     yazi
+    remmina
 
     # Cloud tools
     awscli2

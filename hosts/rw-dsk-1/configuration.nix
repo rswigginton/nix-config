@@ -63,7 +63,6 @@
   environment.systemPackages = with pkgs; [
     vivaldi
     zoom-us
-    discord-ptb
   ];
 
   # System state version
