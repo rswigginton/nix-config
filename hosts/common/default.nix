@@ -134,6 +134,7 @@
     trash-cli
     yazi
     remmina
+    freerdp
 
     # Cloud tools
     awscli2
