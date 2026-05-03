@@ -8,8 +8,8 @@
 }:
 
 let
-  forgejoDomain = "git.trebornaut.com";
-  woodpeckerDomain = "woodpecker.trebornaut.com";
+  forgejoDomain = "git2.trebornaut.com";
+  woodpeckerDomain = "woodpecker2.trebornaut.com";
   forgejoHttpPort = 3000;
   woodpeckerHttpPort = 8000;
   woodpeckerGrpcPort = 9000;
@@ -23,7 +23,8 @@ in
   ];
 
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Hostname
@@ -76,50 +77,50 @@ in
     };
   };
 
-  # ---------------------------------------------------------------------------
-  # Woodpecker
-  # ---------------------------------------------------------------------------
-  #
-  # Secrets live in /var/lib/secrets/woodpecker.env (root:root, 0600).
-  # Required keys:
-  #   WOODPECKER_FORGEJO_CLIENT=<oauth2 client id from forgejo>
-  #   WOODPECKER_FORGEJO_SECRET=<oauth2 client secret from forgejo>
-  #   WOODPECKER_AGENT_SECRET=<long random string, shared server<->agent>
-  #
-  # Generate agent secret with: openssl rand -hex 32
-  # Create OAuth app in Forgejo: Site Administration -> Applications.
-  #   Redirect URI: https://woodpecker.trebornaut.com/authorize
-  #
-  # The same file is reused for the agent (only WOODPECKER_AGENT_SECRET is
-  # consumed there). Keep it 0600 root-owned; both services run as root or
-  # systemd dynamic users that read it before privilege drop.
-  services.woodpecker-server = {
-    enable = true;
-    environment = {
-      WOODPECKER_HOST = "https://${woodpeckerDomain}";
-      WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
-      WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
-      WOODPECKER_OPEN = "false";
-      WOODPECKER_FORGEJO = "true";
-      WOODPECKER_FORGEJO_URL = "https://${forgejoDomain}";
-      WOODPECKER_DATABASE_DRIVER = "sqlite3";
-      WOODPECKER_DATABASE_DATASOURCE = "/var/lib/woodpecker-server/woodpecker.sqlite";
-    };
-    environmentFile = "/var/lib/secrets/woodpecker.env";
-  };
-
-  services.woodpecker-agents.agents.docker = {
-    enable = true;
-    environment = {
-      WOODPECKER_SERVER = "127.0.0.1:${toString woodpeckerGrpcPort}";
-      WOODPECKER_BACKEND = "docker";
-      DOCKER_HOST = "unix:///var/run/docker.sock";
-      WOODPECKER_MAX_WORKFLOWS = "4";
-    };
-    environmentFile = [ "/var/lib/secrets/woodpecker.env" ];
-    extraGroups = [ "docker" ];
-  };
-
+#  # ---------------------------------------------------------------------------
+#  # Woodpecker
+#  # ---------------------------------------------------------------------------
+#  #
+#  # Secrets live in /var/lib/secrets/woodpecker.env (root:root, 0600).
+#  # Required keys:
+#  #   WOODPECKER_FORGEJO_CLIENT=<oauth2 client id from forgejo>
+#  #   WOODPECKER_FORGEJO_SECRET=<oauth2 client secret from forgejo>
+#  #   WOODPECKER_AGENT_SECRET=<long random string, shared server<->agent>
+#  #
+#  # Generate agent secret with: openssl rand -hex 32
+#  # Create OAuth app in Forgejo: Site Administration -> Applications.
+#  #   Redirect URI: https://woodpecker.trebornaut.com/authorize
+#  #
+#  # The same file is reused for the agent (only WOODPECKER_AGENT_SECRET is
+#  # consumed there). Keep it 0600 root-owned; both services run as root or
+#  # systemd dynamic users that read it before privilege drop.
+#  services.woodpecker-server = {
+#    enable = true;
+#    environment = {
+#      WOODPECKER_HOST = "https://${woodpeckerDomain}";
+#      WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
+#      WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
+#      WOODPECKER_OPEN = "false";
+#      WOODPECKER_FORGEJO = "true";
+#      WOODPECKER_FORGEJO_URL = "https://${forgejoDomain}";
+#      WOODPECKER_DATABASE_DRIVER = "sqlite3";
+#      WOODPECKER_DATABASE_DATASOURCE = "/var/lib/woodpecker-server/woodpecker.sqlite";
+#    };
+#    environmentFile = "/var/lib/secrets/woodpecker.env";
+#  };
+#
+#  services.woodpecker-agents.agents.docker = {
+#    enable = true;
+#    environment = {
+#      WOODPECKER_SERVER = "127.0.0.1:${toString woodpeckerGrpcPort}";
+#      WOODPECKER_BACKEND = "docker";
+#      DOCKER_HOST = "unix:///var/run/docker.sock";
+#      WOODPECKER_MAX_WORKFLOWS = "4";
+#    };
+#    environmentFile = [ "/var/lib/secrets/woodpecker.env" ];
+#    extraGroups = [ "docker" ];
+#  };
+#
   # ---------------------------------------------------------------------------
   # ACME (lego) + Caddy reverse proxy
   # ---------------------------------------------------------------------------
@@ -139,13 +140,10 @@ in
     defaults = {
       email = "rswigginton@gmail.com";
       dnsProvider = "cloudflare";
-      credentialsFile = "/var/lib/secrets/cloudflare-acme.env";
+      environmentFile = "/var/lib/secrets/cloudflare-acme.env";
       # Use a public resolver so we don't depend on the host's DNS for the
       # propagation check.
       dnsResolver = "1.1.1.1:53";
-      # caddy needs to read the key files; run lego with the caddy group so
-      # the resulting certs are group-readable by caddy.
-      group = "caddy";
       reloadServices = [ "caddy.service" ];
     };
     certs = {
@@ -153,6 +151,14 @@ in
       ${woodpeckerDomain} = { };
     };
   };
+
+  users.users.caddy = {
+    isSystemUser = true; 
+    group = "caddy";
+    extraGroups = [ "acme" ];
+  
+  };
+  users.groups.caddy = {};
 
   services.caddy = {
     enable = true;
@@ -184,6 +190,7 @@ in
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
+    forgejo
   ];
 
   # System state version
