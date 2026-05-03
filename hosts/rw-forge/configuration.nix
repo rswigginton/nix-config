@@ -9,10 +9,7 @@
 
 let
   forgejoDomain = "git2.trebornaut.com";
-  woodpeckerDomain = "woodpecker2.trebornaut.com";
   forgejoHttpPort = 3000;
-  woodpeckerHttpPort = 8000;
-  woodpeckerGrpcPort = 9000;
 in
 {
   imports = [
@@ -77,50 +74,43 @@ in
     };
   };
 
-#  # ---------------------------------------------------------------------------
-#  # Woodpecker
-#  # ---------------------------------------------------------------------------
-#  #
-#  # Secrets live in /var/lib/secrets/woodpecker.env (root:root, 0600).
-#  # Required keys:
-#  #   WOODPECKER_FORGEJO_CLIENT=<oauth2 client id from forgejo>
-#  #   WOODPECKER_FORGEJO_SECRET=<oauth2 client secret from forgejo>
-#  #   WOODPECKER_AGENT_SECRET=<long random string, shared server<->agent>
-#  #
-#  # Generate agent secret with: openssl rand -hex 32
-#  # Create OAuth app in Forgejo: Site Administration -> Applications.
-#  #   Redirect URI: https://woodpecker.trebornaut.com/authorize
-#  #
-#  # The same file is reused for the agent (only WOODPECKER_AGENT_SECRET is
-#  # consumed there). Keep it 0600 root-owned; both services run as root or
-#  # systemd dynamic users that read it before privilege drop.
-#  services.woodpecker-server = {
-#    enable = true;
-#    environment = {
-#      WOODPECKER_HOST = "https://${woodpeckerDomain}";
-#      WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
-#      WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
-#      WOODPECKER_OPEN = "false";
-#      WOODPECKER_FORGEJO = "true";
-#      WOODPECKER_FORGEJO_URL = "https://${forgejoDomain}";
-#      WOODPECKER_DATABASE_DRIVER = "sqlite3";
-#      WOODPECKER_DATABASE_DATASOURCE = "/var/lib/woodpecker-server/woodpecker.sqlite";
-#    };
-#    environmentFile = "/var/lib/secrets/woodpecker.env";
-#  };
-#
-#  services.woodpecker-agents.agents.docker = {
-#    enable = true;
-#    environment = {
-#      WOODPECKER_SERVER = "127.0.0.1:${toString woodpeckerGrpcPort}";
-#      WOODPECKER_BACKEND = "docker";
-#      DOCKER_HOST = "unix:///var/run/docker.sock";
-#      WOODPECKER_MAX_WORKFLOWS = "4";
-#    };
-#    environmentFile = [ "/var/lib/secrets/woodpecker.env" ];
-#    extraGroups = [ "docker" ];
-#  };
-#
+  # ---------------------------------------------------------------------------
+  # Forgejo Actions runners (docker backend, ephemeral per job)
+  # ---------------------------------------------------------------------------
+  #
+  # Token file: /var/lib/secrets/forgejo-runner-token (root:root, 0600).
+  # Generate once with:
+  #   sudo -u forgejo forgejo --work-path /var/lib/forgejo \
+  #     actions generate-runner-token \
+  #     | sudo tee /var/lib/secrets/forgejo-runner-token > /dev/null
+  #   sudo chmod 600 /var/lib/secrets/forgejo-runner-token
+  #
+  # The same registration token is reusable across all instances; each runner
+  # mints its own per-runner credential on first connect (~/.runner inside the
+  # state dir) and stops needing the token file thereafter.
+  services.gitea-actions-runner.instances = {
+    default = {
+      enable = true;
+      name = "rw-forge-default";
+      # Loopback to forgejo — no DNS / TLS in the hot path.
+      url = "http://127.0.0.1:${toString forgejoHttpPort}";
+      tokenFile = "/var/lib/secrets/forgejo-runner-token";
+      labels = [
+        "ubuntu-latest:docker://node:20-bookworm"
+        "ubuntu-22.04:docker://node:20-bookworm"
+        "docker:docker://docker:dind"
+      ];
+      settings = {
+        runner.capacity = 4;
+        container.docker_host = "unix:///var/run/docker.sock";
+      };
+    };
+  };
+
+  # The runner module uses DynamicUser; grant docker socket access via
+  # supplementary group so jobs can spawn containers.
+  systemd.services."gitea-runner-default".serviceConfig.SupplementaryGroups = [ "docker" ];
+
   # ---------------------------------------------------------------------------
   # ACME (lego) + Caddy reverse proxy
   # ---------------------------------------------------------------------------
@@ -148,7 +138,6 @@ in
     };
     certs = {
       ${forgejoDomain} = { };
-      ${woodpeckerDomain} = { };
     };
   };
 
@@ -168,24 +157,13 @@ in
       tls /var/lib/acme/${forgejoDomain}/fullchain.pem /var/lib/acme/${forgejoDomain}/key.pem
       reverse_proxy 127.0.0.1:${toString forgejoHttpPort}
     '';
-
-    virtualHosts.${woodpeckerDomain}.extraConfig = ''
-      tls /var/lib/acme/${woodpeckerDomain}/fullchain.pem /var/lib/acme/${woodpeckerDomain}/key.pem
-      reverse_proxy 127.0.0.1:${toString woodpeckerHttpPort}
-    '';
   };
 
   # Don't start caddy until certs exist; otherwise first boot fails because
   # the tls files aren't there yet.
   systemd.services.caddy = {
-    after = [
-      "acme-finished-${forgejoDomain}.target"
-      "acme-finished-${woodpeckerDomain}.target"
-    ];
-    wants = [
-      "acme-finished-${forgejoDomain}.target"
-      "acme-finished-${woodpeckerDomain}.target"
-    ];
+    after = [ "acme-finished-${forgejoDomain}.target" ];
+    wants = [ "acme-finished-${forgejoDomain}.target" ];
   };
 
   # Host-specific packages
