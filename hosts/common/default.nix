@@ -1,4 +1,5 @@
-# Common configuration for all hosts
+# Shared base for all hosts (server + desktop).
+# Desktop-only bits live in ./desktop.nix — desktop hosts must import both.
 
 {
   lib,
@@ -43,177 +44,42 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  console.keyMap = "us";
 
   # Security
   security.sudo.wheelNeedsPassword = false;
 
-  # Display manager
-  services.displayManager.ly.enable = true;
-
-  # Common system packages for all hosts
+  # Minimal CLI toolset shared by every host
   environment.systemPackages = with pkgs; [
-    # Essential tools
     vim
-    wget
     git
     curl
-    chezmoi
-    atuin
-
-    # Development tools
-    gh
-    glab
-    tea
-    neovim
-    gcc
-    nodejs
-    go
-    lazygit
-    just
-    pre-commit
-    golangci-lint
-    direnv
-    nix-direnv
-
-    # Neovim runtime deps (config managed by chezmoi)
-    ripgrep
-    fd
-    tree-sitter
-    lua-language-server
-    nil
-    typescript-language-server
-    vscode-langservers-extracted
-    gopls
-    rust-analyzer
-    terraform-ls
-    dockerfile-language-server
-    yaml-language-server
-    pyright
-    stylua
-    prettierd
-    nixfmt
-    statix
-    deadnix
-    ruff
-
-    # Desktop applications
-    alacritty
-    kitty
-    claude-code
-
-    # Shell
-    starship
-    nushell
-
-    # System utilities
-    openssl
+    wget
     htop
     btop
-    unzip
-    zip
-    tree
-    file
-    which
-    gnumake
-    eza
-    fzf
-    gum
-    flameshot
-    television
-    zellij
-    bat
-    zoxide
-    httpie
-    progress
-    tldr
-    trash-cli
-    yazi
-    remmina
-    freerdp
-
-    # Cloud tools
-    awscli2
-
-    # Container tools
-    distrobox
-    lazydocker
-
-    # kubernetes
-    k9s
-    popeye
-    dyff
-    kubectl
-    kustomize
-    kubernetes-helm
-    jsonnet
-    kubectl-cnpg
-    kind
-    argocd
-    kubebuilder
-
-    terraform
-    ansible
-    # Network tools
-    dig
-    nmap
-    traceroute
-
-    # Text processing
     jq
     yq
     ripgrep
     fd
-
-    # GTK THEMES
-    tokyonight-gtk-theme
-    papirus-icon-theme
+    tree
+    file
+    which
+    unzip
+    zip
+    gnumake
+    openssl
+    dig
+    nmap
+    traceroute
   ];
 
-  # Fonts
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-  ];
-
-  # Common programs
   programs.tmux = {
     enable = true;
     clock24 = true;
   };
 
-  programs.zsh = {
-    enable = true;
-    autosuggestions.enable = true;
-    syntaxHighlighting.enable = true;
-    interactiveShellInit = ''
-      source ${pkgs.zsh-abbr}/share/zsh/zsh-abbr/zsh-abbr.plugin.zsh
-    '';
-  };
-
-  programs.firefox.enable = true;
-
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "robert" ];
-  };
-
-  environment.etc."1password/custom_allowed_browsers" = {
-    text = ''
-      vivaldi-bin
-    '';
-    mode = "0755";
-  };
-
-  # Allow dynamically linked binaries (e.g. cursor-agent, VS Code extensions)
-  programs.nix-ld.enable = true;
-
-  environment.variables.EDITOR = "nvim";
-  environment.variables.VISUAL = "nvim";
+  environment.variables.EDITOR = "vim";
+  environment.variables.VISUAL = "vim";
 
   # SSH
   services.openssh = {

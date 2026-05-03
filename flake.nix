@@ -46,6 +46,7 @@
       nixosConfigurations = {
         rw-dsk-1 = mkHost "rw-dsk-1";
         rw-bl-ser8 = mkHost "rw-bl-ser8";
+        rw-forge = mkHost "rw-forge";
         nixos = mkHost "nixos";
         nix-pl-vm = mkHost "nix-pl-vm";
         rw-pl-vm = mkHost "rw-pl-vm";

@@ -10,6 +10,7 @@
 {
   imports = [
     ../common
+    ../common/desktop.nix
     ../common/fish.nix
     ../common/podman.nix
     # ../common/cosmic.nix

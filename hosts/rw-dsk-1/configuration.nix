@@ -10,6 +10,7 @@
 {
   imports = [
     ../common
+    ../common/desktop.nix
     ../common/fish.nix
     ../common/docker.nix
     ../common/steam.nix
