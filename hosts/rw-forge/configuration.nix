@@ -89,6 +89,20 @@ in
     };
   };
 
+  # Inject custom navbar links into Forgejo via its template extension point.
+  # See https://forgejo.org/docs/latest/admin/customization/ for other slots
+  # (header.tmpl, footer.tmpl, home.tmpl, etc.).
+  systemd.tmpfiles.rules = [
+    "d /var/lib/forgejo/custom/templates/custom 0750 forgejo forgejo - -"
+    "L+ /var/lib/forgejo/custom/templates/custom/extra_links.tmpl - - - - ${
+      pkgs.writeText "forgejo-extra-links.tmpl" ''
+        <a class="item" href="{{AppSubUrl}}/robert/-/packages">
+          {{svg "octicon-package"}} Packages
+        </a>
+      ''
+    }"
+  ];
+
   # ---------------------------------------------------------------------------
   # Forgejo Actions runners (docker backend, ephemeral per job)
   # ---------------------------------------------------------------------------
@@ -130,6 +144,10 @@ in
           # Trade-off: jobs effectively have root on the host via docker —
           # only run trusted workflows.
           docker_host = "unix:///var/run/docker.sock";
+          # Don't try to pull images that only exist locally on the host
+          # daemon (e.g. built via `examples/ci-image/build.sh`). Falls back
+          # to a pull if the image isn't already present.
+          force_pull = false;
         };
       };
     };
