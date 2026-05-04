@@ -102,7 +102,9 @@ in
       '';
     in
     lib.mkAfter ''
-      install -d -m 0750 /var/lib/forgejo/custom/templates/custom
+      # mkdir -p doesn't chmod when the dir already exists, so it's safe even
+      # if a stale dir owned by another user is sitting there.
+      mkdir -p /var/lib/forgejo/custom/templates/custom
       install -m 0644 ${extraLinks} \
         /var/lib/forgejo/custom/templates/custom/extra_links.tmpl
     '';
