@@ -60,6 +60,10 @@ in
       server = {
         DOMAIN = forgejoDomain;
         ROOT_URL = "https://${forgejoDomain}/";
+        # LOCAL_ROOT_URL is what Forgejo Actions embeds into job specs as the
+        # clone URL. Defaults to "http://<HTTP_ADDR>:<HTTP_PORT>/" — which is
+        # loopback inside job containers. Pin it to the public URL.
+        LOCAL_ROOT_URL = "https://${forgejoDomain}/";
         HTTP_ADDR = "127.0.0.1";
         HTTP_PORT = forgejoHttpPort;
         # Forgejo's built-in SSH server; host's openssh stays on 22.
