@@ -88,8 +88,9 @@ in
   # The same registration token is reusable across all instances; each runner
   # mints its own per-runner credential on first connect (~/.runner inside the
   # state dir) and stops needing the token file thereafter.
-  services.gitea-actions-runner.instances = {
-    default = {
+  services.gitea-actions-runner = {
+    package = pkgs.forgejo-runner;
+    instances.default = {
       enable = true;
       name = "rw-forge-default";
       # Loopback to forgejo — no DNS / TLS in the hot path.
@@ -142,12 +143,12 @@ in
   };
 
   users.users.caddy = {
-    isSystemUser = true; 
+    isSystemUser = true;
     group = "caddy";
     extraGroups = [ "acme" ];
-  
+
   };
-  users.groups.caddy = {};
+  users.groups.caddy = { };
 
   services.caddy = {
     enable = true;
