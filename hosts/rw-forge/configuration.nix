@@ -110,10 +110,10 @@ in
       labels = [
         "ubuntu-latest:docker://node:20-bookworm"
         "ubuntu-22.04:docker://node:20-bookworm"
-        # `docker` label uses an image with the docker CLI + compose plugin;
-        # the host's docker socket is bind-mounted into the job container
-        # below, so commands hit the host daemon.
-        "docker:docker://docker:27-cli"
+        # `docker` label needs node (for JS actions like actions/checkout)
+        # AND docker CLI/compose. catthehacker/ubuntu:act-latest is the
+        # canonical "GHA-compatible" image — ~1GB but cached after first pull.
+        "docker:docker://catthehacker/ubuntu:act-latest"
       ];
       settings = {
         runner.capacity = 4;
