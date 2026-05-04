@@ -134,12 +134,13 @@ in
       url = "https://${forgejoDomain}";
       tokenFile = "/var/lib/secrets/forgejo-runner-token";
       labels = [
-        "ubuntu-latest:docker://node:20-bookworm"
-        "ubuntu-22.04:docker://node:20-bookworm"
-        # `docker` label needs node (for JS actions like actions/checkout)
-        # AND docker CLI/compose. catthehacker/ubuntu:act-latest is the
-        # canonical "GHA-compatible" image — ~1GB but cached after first pull.
-        "docker:docker://catthehacker/ubuntu:act-latest"
+        # Single image for all labels: layered on catthehacker/ubuntu:act-latest
+        # with k8s tooling baked in (kubectl, helm, kustomize, kind, argocd,
+        # jsonnet). Built from hosts/rw-forge/examples/ci-image/Dockerfile,
+        # pushed to forgejo's own container registry.
+        "ubuntu-latest:docker://git2.trebornaut.com/robert/runner:latest"
+        "ubuntu-22.04:docker://git2.trebornaut.com/robert/runner:latest"
+        "docker:docker://git2.trebornaut.com/robert/runner:1.0.0"
       ];
       settings = {
         runner.capacity = 4;
