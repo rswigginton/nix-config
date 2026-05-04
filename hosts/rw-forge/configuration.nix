@@ -71,6 +71,17 @@ in
 
       service.DISABLE_REGISTRATION = true;
       session.COOKIE_SECURE = true;
+
+      # Auto-prune runner records that have been offline for a while —
+      # cleans up the stale entries created when a runner re-registers
+      # (e.g. after a labels change wipes its .runner credential).
+      "cron.cleanup_offline_runners" = {
+        ENABLED = true;
+        RUN_AT_START = true;
+        SCHEDULE = "@hourly";
+        GLOBAL_SCOPE_ONLY = true;
+        OLDER_THAN = "1h";
+      };
     };
   };
 
