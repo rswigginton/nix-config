@@ -104,8 +104,10 @@ in
     instances.default = {
       enable = true;
       name = "rw-forge-default";
-      # Loopback to forgejo — no DNS / TLS in the hot path.
-      url = "http://127.0.0.1:${toString forgejoHttpPort}";
+      # Use the public hostname: the runner itself + every job container needs
+      # a reachable URL, and `127.0.0.1` would mean "the container itself"
+      # inside a job. Traffic loops back: container -> host -> caddy -> forgejo.
+      url = "https://${forgejoDomain}";
       tokenFile = "/var/lib/secrets/forgejo-runner-token";
       labels = [
         "ubuntu-latest:docker://node:20-bookworm"
