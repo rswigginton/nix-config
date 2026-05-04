@@ -118,12 +118,12 @@ in
       settings = {
         runner.capacity = 4;
         container = {
+          # `docker_host` set to the unix socket makes forgejo-runner auto-mount
+          # /var/run/docker.sock into every job container. Workflows can then
+          # run `docker compose up` etc. without privileged docker-in-docker.
+          # Trade-off: jobs effectively have root on the host via docker —
+          # only run trusted workflows.
           docker_host = "unix:///var/run/docker.sock";
-          # Bind-mount host docker socket into every job container. Lets
-          # workflows run `docker compose up` etc. without needing privileged
-          # docker-in-docker. Trade-off: jobs effectively have root on the
-          # host via docker — only run trusted workflows.
-          options = "-v /var/run/docker.sock:/var/run/docker.sock";
         };
       };
     };
