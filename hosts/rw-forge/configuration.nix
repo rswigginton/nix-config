@@ -91,17 +91,21 @@ in
 
   # Inject custom navbar links into Forgejo via its template extension point.
   # See https://forgejo.org/docs/latest/admin/customization/ for other slots
-  # (header.tmpl, footer.tmpl, home.tmpl, etc.).
-  systemd.tmpfiles.rules = [
-    "d /var/lib/forgejo/custom/templates/custom 0750 forgejo forgejo - -"
-    "L+ /var/lib/forgejo/custom/templates/custom/extra_links.tmpl - - - - ${
-      pkgs.writeText "forgejo-extra-links.tmpl" ''
+  # (header.tmpl, footer.tmpl, home.tmpl, etc.). Materialized on every forgejo
+  # start so the file is always in sync with what's declared here.
+  systemd.services.forgejo.preStart =
+    let
+      extraLinks = pkgs.writeText "forgejo-extra-links.tmpl" ''
         <a class="item" href="{{AppSubUrl}}/robert/-/packages">
           {{svg "octicon-package"}} Packages
         </a>
-      ''
-    }"
-  ];
+      '';
+    in
+    lib.mkAfter ''
+      install -d -m 0750 /var/lib/forgejo/custom/templates/custom
+      install -m 0644 ${extraLinks} \
+        /var/lib/forgejo/custom/templates/custom/extra_links.tmpl
+    '';
 
   # ---------------------------------------------------------------------------
   # Forgejo Actions runners (docker backend, ephemeral per job)
