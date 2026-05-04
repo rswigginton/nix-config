@@ -99,11 +99,21 @@ in
       labels = [
         "ubuntu-latest:docker://node:20-bookworm"
         "ubuntu-22.04:docker://node:20-bookworm"
-        "docker:docker://docker:dind"
+        # `docker` label uses an image with the docker CLI + compose plugin;
+        # the host's docker socket is bind-mounted into the job container
+        # below, so commands hit the host daemon.
+        "docker:docker://docker:27-cli"
       ];
       settings = {
         runner.capacity = 4;
-        container.docker_host = "unix:///var/run/docker.sock";
+        container = {
+          docker_host = "unix:///var/run/docker.sock";
+          # Bind-mount host docker socket into every job container. Lets
+          # workflows run `docker compose up` etc. without needing privileged
+          # docker-in-docker. Trade-off: jobs effectively have root on the
+          # host via docker — only run trusted workflows.
+          options = "-v /var/run/docker.sock:/var/run/docker.sock";
+        };
       };
     };
   };
