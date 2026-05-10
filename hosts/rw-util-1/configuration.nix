@@ -92,14 +92,21 @@ in
         SSH_PORT = 2222;
         SSH_LISTEN_PORT = 2222;
         SSH_DOMAIN = forgejoDomain;
-        # Cosmetic: clone URLs show git@ instead of forgejo@. Built-in SSH
-        # daemon still runs as the forgejo system user; auth is by pubkey
-        # so the username in the URL doesn't matter.
+        # Display + accept as git@ in clone URLs and SSH login. Both keys
+        # need to match — forgejo's built-in SSH daemon checks the login
+        # username against BUILTIN_SSH_SERVER_USER, and SSH_USER is what
+        # gets rendered in the UI.
+        SSH_USER = "git";
         BUILTIN_SSH_SERVER_USER = "git";
       };
 
       service.DISABLE_REGISTRATION = true;
       session.COOKIE_SECURE = true;
+
+      # Allow webhooks to ci.trebornaut.com / git.trebornaut.com even though
+      # they resolve to LAN IPs on this box. Default `external` rejects
+      # anything in RFC1918 ranges.
+      webhook.ALLOWED_HOST_LIST = "external,ci.trebornaut.com,git.trebornaut.com";
 
       "cron.cleanup_offline_runners" = {
         ENABLED = true;
