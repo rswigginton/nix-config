@@ -105,6 +105,113 @@ in
         OLDER_THAN = "1h";
       };
     };
+
+    # ---------------------------------------------------------------------------
+    # Forgejo backup → Cloudflare R2
+    # ---------------------------------------------------------------------------
+    #
+    # 1. forgejo's dump module writes a tar.zst to /var/lib/forgejo/dump/
+    #    on the configured interval (sqlite snapshot, repos, lfs, attachments).
+    # 2. systemd timer below rclone-copies the latest dump to R2.
+    #
+    # rclone config secret: /var/lib/secrets/rclone-r2.conf (root:root, 0600)
+    #   [r2]
+    #   type = s3
+    #   provider = Cloudflare
+    #   access_key_id = <R2 access key>
+    #   secret_access_key = <R2 secret>
+    #   endpoint = https://<account-id>.r2.cloudflarestorage.com
+    #   region = auto
+    dump = {
+      enable = true;
+      # 3am America/Denver (system tz, set in common/default.nix).
+      interval = "*-*-* 03:00:00";
+      type = "tar.zst";
+      backupDir = "/var/lib/forgejo/dump";
+    };
+  };
+
+  # Trigger upload only when the dump finishes successfully — no own timer,
+  # no race against a still-running dump. forgejo-dump.service is created by
+  # the forgejo module; we add an OnSuccess hook to it.
+  systemd.services.forgejo-dump.unitConfig.OnSuccess = [ "forgejo-dump-upload.service" ];
+
+  # Healthchecks.io ping URL at /var/lib/secrets/healthchecks.env (0600):
+  #   HC_FORGEJO_BACKUP_URL=https://hc-ping.com/<uuid>
+  systemd.services.forgejo-dump-upload = {
+    description = "Upload latest forgejo dump to Cloudflare R2";
+    after = [ "forgejo-dump.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      EnvironmentFile = "/var/lib/secrets/healthchecks.env";
+      ExecStart = pkgs.writeShellScript "forgejo-dump-upload" ''
+        set -euo pipefail
+        ${pkgs.rclone}/bin/rclone \
+          --config /var/lib/secrets/rclone-r2.conf \
+          copy /var/lib/forgejo/dump/ r2:trebornaut-backups/forgejo/ \
+          --include "*.tar.zst"
+        ${pkgs.curl}/bin/curl -fsS -m 10 --retry 3 "$HC_FORGEJO_BACKUP_URL" >/dev/null
+      '';
+      # Ping /fail if the unit exits non-zero so a missed check fires alert.
+      ExecStopPost = pkgs.writeShellScript "forgejo-dump-upload-failhook" ''
+        if [ "$EXIT_STATUS" != "0" ]; then
+          ${pkgs.curl}/bin/curl -fsS -m 10 --retry 3 "$HC_FORGEJO_BACKUP_URL/fail" \
+            >/dev/null || true
+        fi
+      '';
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Local dump prune (gated on R2 freshness)
+  # ---------------------------------------------------------------------------
+  #
+  # Refuses to delete anything if R2 doesn't have a backup uploaded within the
+  # last 2 days. Keeps local backups around as a safety net when the upload
+  # pipeline silently stops working.
+  systemd.services.forgejo-dump-prune-local = {
+    description = "Prune local forgejo dumps if R2 has a recent backup";
+    after = [ "forgejo-dump-upload.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      ExecStart = pkgs.writeShellScript "forgejo-dump-prune-local" ''
+        set -euo pipefail
+        RCLONE='${pkgs.rclone}/bin/rclone --config /var/lib/secrets/rclone-r2.conf'
+
+        # Newest mtime in R2, ISO format from rclone lsl ("YYYY-MM-DD HH:MM:SS").
+        latest=$($RCLONE lsl r2:trebornaut-backups/forgejo/ --include '*.tar.zst' \
+          | awk '{print $2" "$3}' | sort | tail -1 || true)
+
+        if [ -z "$latest" ]; then
+          echo "no R2 backups found — refusing to prune local"
+          exit 1
+        fi
+
+        latest_epoch=$(${pkgs.coreutils}/bin/date -d "$latest" +%s)
+        now=$(${pkgs.coreutils}/bin/date +%s)
+        age_days=$(( (now - latest_epoch) / 86400 ))
+
+        if [ "$age_days" -gt 2 ]; then
+          echo "newest R2 backup is $age_days days old — refusing to prune local"
+          exit 1
+        fi
+
+        echo "R2 fresh ($age_days days old), pruning local dumps older than 14 days"
+        ${pkgs.findutils}/bin/find /var/lib/forgejo/dump \
+          -name '*.tar.zst' -mtime +14 -print -delete
+      '';
+    };
+  };
+
+  systemd.timers.forgejo-dump-prune-local = {
+    description = "Weekly local dump prune (gated on R2 freshness)";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
   };
 
   # ---------------------------------------------------------------------------
