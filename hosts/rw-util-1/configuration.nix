@@ -149,7 +149,7 @@ in
         set -euo pipefail
         ${pkgs.rclone}/bin/rclone \
           --config /var/lib/secrets/rclone-r2.conf \
-          copy /var/lib/forgejo/dump/ r2:trebornaut-backups/forgejo/ \
+          copy /var/lib/forgejo/dump/ r2:forgejo-backups/ \
           --include "*.tar.zst"
         ${pkgs.curl}/bin/curl -fsS -m 10 --retry 3 "$HC_FORGEJO_BACKUP_URL" >/dev/null
       '';
@@ -181,7 +181,7 @@ in
         RCLONE='${pkgs.rclone}/bin/rclone --config /var/lib/secrets/rclone-r2.conf'
 
         # Newest mtime in R2, ISO format from rclone lsl ("YYYY-MM-DD HH:MM:SS").
-        latest=$($RCLONE lsl r2:trebornaut-backups/forgejo/ --include '*.tar.zst' \
+        latest=$($RCLONE lsl r2:forgejo-backups/ --include '*.tar.zst' \
           | awk '{print $2" "$3}' | sort | tail -1 || true)
 
         if [ -z "$latest" ]; then
