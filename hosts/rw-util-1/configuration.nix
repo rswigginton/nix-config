@@ -243,8 +243,10 @@ in
       url = "https://${forgejoDomain}";
       tokenFile = "/var/lib/secrets/forgejo-runner-token";
       labels = [
-        "ubuntu-latest:docker://node:20-bookworm"
-        "ubuntu-22.04:docker://node:20-bookworm"
+        # catthehacker images include docker CLI + compose, git, common build
+        # tooling. Mirrors rw-forge's runner setup.
+        "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
+        "ubuntu-22.04:docker://catthehacker/ubuntu:act-latest"
       ];
       settings = {
         runner.capacity = 4;
@@ -279,7 +281,7 @@ in
       WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
       WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
       WOODPECKER_OPEN = "true";
-      WOODPECKER_ADMIN = "robert";
+      WOODPECKER_ADMIN = "rswigginton";
 
       WOODPECKER_FORGEJO = "true";
       WOODPECKER_FORGEJO_URL = "https://${forgejoDomain}";
