@@ -13,7 +13,19 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  # fileSystems and swapDevices are declared in ./disko.nix.
+  # Placeholder — overwrite this whole file with output of
+  #   nixos-generate-config --root /mnt --show-hardware-config
+  # after partitioning + mounting, before running nixos-install.
+  fileSystems."/" =
+    { device = "/dev/disk/by-label/nixos";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-label/boot";
+      fsType = "vfat";
+    };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

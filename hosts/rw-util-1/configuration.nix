@@ -19,13 +19,11 @@ let
 in
 {
   imports = [
-    inputs.disko.nixosModules.disko
     ../common
     ../common/fish.nix
     ../common/docker.nix
     ../common/tailscale.nix
     ./hardware-configuration.nix
-    ./disko.nix
   ];
 
   # Bootloader
