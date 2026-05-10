@@ -160,7 +160,7 @@ in
       WOODPECKER_HOST = "https://${woodpeckerDomain}";
       WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
       WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
-      WOODPECKER_OPEN = "false";
+      WOODPECKER_OPEN = "true";
       WOODPECKER_ADMIN = "robert";
 
       WOODPECKER_FORGEJO = "true";
