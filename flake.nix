@@ -14,6 +14,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
+
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -47,6 +50,7 @@
         rw-dsk-1 = mkHost "rw-dsk-1";
         rw-bl-ser8 = mkHost "rw-bl-ser8";
         rw-forge = mkHost "rw-forge";
+        rw-util-1 = mkHost "rw-util-1";
         nixos = mkHost "nixos";
         nix-pl-vm = mkHost "nix-pl-vm";
         rw-pl-vm = mkHost "rw-pl-vm";

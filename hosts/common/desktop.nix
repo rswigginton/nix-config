@@ -93,6 +93,7 @@
 
     # Desktop applications
     alacritty
+    ghostty
     kitty
     claude-code
 
