@@ -92,6 +92,10 @@ in
         SSH_PORT = 2222;
         SSH_LISTEN_PORT = 2222;
         SSH_DOMAIN = forgejoDomain;
+        # Cosmetic: clone URLs show git@ instead of forgejo@. Built-in SSH
+        # daemon still runs as the forgejo system user; auth is by pubkey
+        # so the username in the URL doesn't matter.
+        BUILTIN_SSH_SERVER_USER = "git";
       };
 
       service.DISABLE_REGISTRATION = true;
