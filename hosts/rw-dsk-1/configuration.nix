@@ -31,8 +31,19 @@
   # Hostname
   networking.hostName = "rw-dsk-1";
 
-  # Wake-on-LAN (magic packet)
-  networking.interfaces.eno1.wakeOnLan.enable = true;
+  # Wake-on-LAN (magic packet) — NM manages eno1 so the
+  # networking.interfaces.*.wakeOnLan option is a no-op here.
+  # Force WOL on at boot and after resume via ethtool.
+  systemd.services.wol-eno1 = {
+    description = "Enable Wake-on-LAN for eno1";
+    wantedBy = [ "multi-user.target" "suspend.target" "hibernate.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.ethtool}/bin/ethtool -s eno1 wol g";
+    };
+  };
 
   # User account
   users.users.robert = {
@@ -67,6 +78,8 @@
   environment.systemPackages = with pkgs; [
     vivaldi
     zoom-us
+    ethtool
+    wakeonlan
   ];
 
   # System state version
