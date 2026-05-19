@@ -20,7 +20,7 @@ in
 {
   imports = [
     ../common
-    ../common/fish.nix
+    ../common/zsh.nix
     ../common/docker.nix
     ../common/tailscale.nix
     ./hardware-configuration.nix
@@ -42,7 +42,7 @@ in
       "wheel"
       "docker"
     ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
   };
 
   # Firewall: HTTPS, HTTP (ACME http-01 fallback / redirects), Forgejo SSH.
