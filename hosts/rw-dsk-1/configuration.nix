@@ -11,7 +11,7 @@
   imports = [
     ../common
     ../common/desktop.nix
-    ../common/fish.nix
+    ../common/zsh.nix
     ../common/docker.nix
     ../common/steam.nix
     ../common/cosmic.nix
@@ -43,7 +43,7 @@
       "libvirtd"
       "plugdev"
     ];
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
   };
 
   services.input-remapper.enable = true;
