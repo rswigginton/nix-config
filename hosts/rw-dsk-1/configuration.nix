@@ -31,6 +31,9 @@
   # Hostname
   networking.hostName = "rw-dsk-1";
 
+  # Wake-on-LAN (magic packet)
+  networking.interfaces.enp4s0.wakeOnLan.enable = true;
+
   # User account
   users.users.robert = {
     isNormalUser = true;
