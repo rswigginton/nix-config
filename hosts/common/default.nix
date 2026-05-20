@@ -46,6 +46,14 @@
 
   console.keyMap = "us";
 
+  # Install terminfo for all terminal emulators in nixpkgs (ghostty, kitty,
+  # wezterm, …). Base ncurses only ships the classic xterm entries, so SSHing
+  # into a headless host from a modern terminal otherwise yields
+  # "can't find terminal definition for xterm-ghostty" (zsh's zle reports it;
+  # bash/fish stay silent but run on the same bogus TERM). These are small
+  # terminfo-only outputs from the cache, not full GUI app builds.
+  environment.enableAllTerminfo = true;
+
   # Security
   security.sudo.wheelNeedsPassword = false;
 

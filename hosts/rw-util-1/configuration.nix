@@ -11,10 +11,6 @@ let
   forgejoDomain = "git.trebornaut.com";
   forgejoHttpPort = 3000;
 
-  woodpeckerDomain = "ci.trebornaut.com";
-  woodpeckerHttpPort = 8000;
-  woodpeckerGrpcPort = 9000;
-
   tailscaleAdvertise = "192.168.1.0/24";
 in
 {
@@ -103,10 +99,9 @@ in
       service.DISABLE_REGISTRATION = true;
       session.COOKIE_SECURE = true;
 
-      # Allow webhooks to ci.trebornaut.com / git.trebornaut.com even though
-      # they resolve to LAN IPs on this box. Default `external` rejects
-      # anything in RFC1918 ranges.
-      webhook.ALLOWED_HOST_LIST = "external,ci.trebornaut.com,git.trebornaut.com";
+      # Allow webhooks to git.trebornaut.com even though it resolves to a LAN
+      # IP on this box. Default `external` rejects anything in RFC1918 ranges.
+      webhook.ALLOWED_HOST_LIST = "external,git.trebornaut.com";
 
       "cron.cleanup_offline_runners" = {
         ENABLED = true;
@@ -261,50 +256,6 @@ in
   systemd.services."gitea-runner-default".serviceConfig.SupplementaryGroups = [ "docker" ];
 
   # ---------------------------------------------------------------------------
-  # Woodpecker CI (server + agent, both pointed at this host's forgejo)
-  # ---------------------------------------------------------------------------
-  #
-  # Two-stage setup (chicken-egg with forgejo OAuth):
-  #   1. Boot host, finish forgejo setup, sign in.
-  #   2. Forgejo → Site Administration → Integrations → OAuth2 Applications
-  #      → New: name "woodpecker", redirect URI
-  #      https://${woodpeckerDomain}/authorize
-  #   3. Drop creds at /var/lib/secrets/woodpecker.env (root:root, 0600):
-  #        WOODPECKER_FORGEJO_CLIENT=<client id from step 2>
-  #        WOODPECKER_FORGEJO_SECRET=<client secret from step 2>
-  #        WOODPECKER_AGENT_SECRET=<openssl rand -hex 32>
-  #   4. systemctl restart woodpecker-server woodpecker-agent-docker
-  services.woodpecker-server = {
-    enable = true;
-    environment = {
-      WOODPECKER_HOST = "https://${woodpeckerDomain}";
-      WOODPECKER_SERVER_ADDR = "127.0.0.1:${toString woodpeckerHttpPort}";
-      WOODPECKER_GRPC_ADDR = "127.0.0.1:${toString woodpeckerGrpcPort}";
-      WOODPECKER_OPEN = "true";
-      WOODPECKER_ADMIN = "rswigginton";
-
-      WOODPECKER_FORGEJO = "true";
-      WOODPECKER_FORGEJO_URL = "https://${forgejoDomain}";
-
-      WOODPECKER_DATABASE_DRIVER = "sqlite3";
-      WOODPECKER_DATABASE_DATASOURCE = "/var/lib/woodpecker-server/woodpecker.sqlite";
-    };
-    environmentFile = "/var/lib/secrets/woodpecker.env";
-  };
-
-  services.woodpecker-agents.agents.docker = {
-    enable = true;
-    extraGroups = [ "docker" ];
-    environment = {
-      WOODPECKER_SERVER = "127.0.0.1:${toString woodpeckerGrpcPort}";
-      WOODPECKER_BACKEND = "docker";
-      DOCKER_HOST = "unix:///var/run/docker.sock";
-      WOODPECKER_MAX_WORKFLOWS = "4";
-    };
-    environmentFile = [ "/var/lib/secrets/woodpecker.env" ];
-  };
-
-  # ---------------------------------------------------------------------------
   # ACME (lego, cloudflare DNS-01) + Caddy
   # ---------------------------------------------------------------------------
   #
@@ -324,7 +275,6 @@ in
     };
     certs = {
       ${forgejoDomain} = { };
-      ${woodpeckerDomain} = { };
     };
   };
 
@@ -343,28 +293,16 @@ in
       tls /var/lib/acme/${forgejoDomain}/fullchain.pem /var/lib/acme/${forgejoDomain}/key.pem
       reverse_proxy 127.0.0.1:${toString forgejoHttpPort}
     '';
-
-    virtualHosts.${woodpeckerDomain}.extraConfig = ''
-      tls /var/lib/acme/${woodpeckerDomain}/fullchain.pem /var/lib/acme/${woodpeckerDomain}/key.pem
-      reverse_proxy 127.0.0.1:${toString woodpeckerHttpPort}
-    '';
   };
 
   systemd.services.caddy = {
-    after = [
-      "acme-finished-${forgejoDomain}.target"
-      "acme-finished-${woodpeckerDomain}.target"
-    ];
-    wants = [
-      "acme-finished-${forgejoDomain}.target"
-      "acme-finished-${woodpeckerDomain}.target"
-    ];
+    after = [ "acme-finished-${forgejoDomain}.target" ];
+    wants = [ "acme-finished-${forgejoDomain}.target" ];
   };
 
   # Host-specific packages
   environment.systemPackages = with pkgs; [
     forgejo
-    woodpecker-cli
   ];
 
   system.stateVersion = "25.11";
