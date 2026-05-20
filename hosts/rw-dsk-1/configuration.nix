@@ -14,9 +14,9 @@
     ../common/zsh.nix
     ../common/docker.nix
     ../common/steam.nix
-    ../common/cosmic.nix
+    # ../common/cosmic.nix
     ../common/hyprland.nix
-    ../common/kde.nix
+    # ../common/kde.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
     ./hardware-configuration.nix
@@ -36,7 +36,11 @@
   # Force WOL on at boot and after resume via ethtool.
   systemd.services.wol-eno1 = {
     description = "Enable Wake-on-LAN for eno1";
-    wantedBy = [ "multi-user.target" "suspend.target" "hibernate.target" ];
+    wantedBy = [
+      "multi-user.target"
+      "suspend.target"
+      "hibernate.target"
+    ];
     after = [ "network.target" ];
     serviceConfig = {
       Type = "oneshot";
