@@ -16,7 +16,7 @@
     ../common/steam.nix
     # ../common/cosmic.nix
     ../common/hyprland.nix
-    # ../common/tailscale.nix
+    ../common/tailscale.nix
     ../common/virt-manager.nix
     ../common/keyboards.nix
     ./hardware-configuration.nix
